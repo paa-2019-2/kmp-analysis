@@ -1,0 +1,42 @@
+kmp: THEORY
+ BEGIN
+
+ lps, answer : VAR list[nat]
+ pattern, text: VAR list[char]
+ i, j : VAR nat
+ 
+ adjust_index_lps(j, i, pattern, lps) : RECURSIVE nat =
+     IF j = 0 OR pattern`i = pattern`j THEN j
+     ELSE adjust_index_lps(lps`j-1, i, pattern, lps)
+     ENDIF
+ MEASURE j
+ 
+ prefix_func(i, j, pattern, lps) : RECURSIVE list[nat] =
+     IF i >= length(pattern) THEN lps
+     ELSE LET x = adjust_index_lps(j, i, pattern, lps) IN
+	 IF text`i = text`x THEN
+	    prefix_func(i+1, x+1, pattern, cons(lps, x+1))
+	 ELSE
+	 prefix_func(i+1, x, pattern, cons(lps, x))
+	 ENDIF
+     ENDIF
+ MEASURE i
+
+ kmp_search(pattern, text, lps, i, j, answer) : list[nat] =
+     IF i >= length(text) THEN ANSWER
+     ELSE answer
+     ENDIF
+     
+     
+     
+     
+
+
+ kmp(n, m, pattern, text, answer) : list[nat] =
+ 
+     kmp_search(0, 0, answer)
+
+ 
+
+END kmp
+
