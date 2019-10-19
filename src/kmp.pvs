@@ -1,69 +1,55 @@
 kmp: THEORY
  BEGIN
 
- lps, answer, tail : VAR list[nat]
- pattern, text, tailC: VAR string
- i, j, index, head, actual : VAR nat
- headC : VAR char
-
- atC(actual, index, headC, tailC) : RECURSIVE char =
-     IF index = actual THEN headC
-     ELSE atC(actual+1, index, car(tailC), cdr(tailC))
-     ENDIF
- MEASURE actual
-
- at(actual, index, head, tail) : RECURSIVE nat =
-     IF index = actual THEN head
-     ELSE at(actual+1, index, car(tail), cdr(tail))
-     ENDIF
- MEASURE actual
+ lps, answer : VAR list[nat]
+ pattern, text : VAR list[string]
+ i, j, index : VAR nat
 
  adjust_index_lps(j, i, pattern, lps) : RECURSIVE nat =
-     IF j = 0 OR nth(pattern, i) = nth(pattern, j) THEN j
+     IF j <= 0 OR nth(pattern, i) = nth(pattern, j) THEN j
      ELSE adjust_index_lps(nth(lps, j-1), i, pattern, lps)
      ENDIF
- MEASURE j
+ MEASURE length(pattern)
 
- adjust_index_kmp(j, i, pattern, text, lps) : RECURSIVE nat =
+ adjust_index_kmp(i, j, pattern, text, lps) : RECURSIVE nat =
      IF j <= 0 OR nth(pattern, j) = nth(text, i) THEN j
      ELSE adjust_index_kmp(j, nth(lps, j-1), pattern, text, lps)
      ENDIF
- MEASURE j
+ MEASURE length(pattern)
 
  prefix_func(i, j, pattern, lps) : RECURSIVE list[nat] =
      IF i >= length(pattern) THEN lps
      ELSE LET x = adjust_index_lps(j, i, pattern, lps) IN
 	 IF nth(pattern, i) = nth(pattern, x) THEN
-	    prefix_func(i+1, x+1, pattern, cons(x+1, lps))
+	    prefix_func(i+1, x+1, pattern, append(lps, cons(x+1, null)))
 	 ELSE
-	    prefix_func(i+1, x, pattern, cons(x, lps))
+	    prefix_func(i+1, x, pattern, append(lps, cons(x, null)))
 	 ENDIF
      ENDIF
- MEASURE i
+ MEASURE length(pattern)
 
  kmp_search(pattern, text, lps, i, j, answer) : RECURSIVE list[nat] =
      IF i >= length(text) THEN answer
-     ELSE LET x = adjust_index_kmp(j, i, pattern, text, lps) IN
+     ELSE LET x = adjust_index_kmp(i, j, pattern, text, lps) IN
          IF nth(pattern, x) = nth(text, i) THEN
 	     IF x+1 = length(pattern) THEN
-	     	kmp_search(pattern, text, lps, i+1, nth(lps, x), cons(i-length(pattern)+1, answer))
+	     	kmp_search(pattern, text, lps, i+1, nth(lps, x), append(answer, cons(i-length(pattern)+1, null)))
 	     ELSE
-		kmp_search(pattern, text, lps, i+1, x+1, answer)
+		kmp_search(pattern, text, lps, i+
+		1, x+1, answer)
 	     ENDIF
          ELSE
 	     IF x = length(pattern) THEN
-		kmp_search(pattern, text, lps, i+1, nth(lps, x-1), cons(i-length(pattern)+1, answer))
+		kmp_search(pattern, text, lps, i+1, nth(lps, x-1), append(answer, cons(i-length(pattern)+1, null)))
 	     ELSE
 		kmp_search(pattern, text, lps, i+1, x, answer)
 	     ENDIF
 	 ENDIF
      ENDIF
-MEASURE i
+Measure length(text)
 
- kmp(pattern, text, answer) : list[nat] =
-     kmp_search(pattern, text, prefix_func(0, 0, pattern, null), 0, 0, answer)
-
- 
+ kmp(pattern, text) : list[nat] =
+     kmp_search(pattern, text, prefix_func(1, 0, pattern, cons(0, null)), 0, 0, null)
 
 END kmp
 
