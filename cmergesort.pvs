@@ -10,8 +10,8 @@ l,l1,l2 : VAR list[nat]
 cmerge(l1, l2 : list[nat], c : nat) : RECURSIVE [list[nat], nat] =
     IF null?(l1) OR null?(l2) THEN (append(l1, l2), c)
     ELSIF car(l1) <= car(l2) THEN
-        LET aux = cmerge(cdr(l1), l2, c+1) IN (cons(car(l1), aux`1), aux`2+1)
-    ELSE LET aux = cmerge(l1, cdr(l2), c+1) IN (cons(car(l2), aux`1), aux`2+1)
+        LET aux = cmerge(cdr(l1), l2, c) IN (cons(car(l1), aux`1), aux`2+1)
+    ELSE LET aux = cmerge(l1, cdr(l2), c) IN (cons(car(l2), aux`1), aux`2+1)
     ENDIF
 MEASURE length(l1) + length(l2)
 
