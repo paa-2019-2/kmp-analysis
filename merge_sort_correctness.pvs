@@ -1,0 +1,37 @@
+%% Universidade de Brasília - UnB 
+%% Instituto de Ciências Exatas  
+%% Departamento de Ciência da Computação
+%%
+%% Disciplina: Projeto e Análise de Algoritmos
+%% Prof Dr Flávio L C Moura
+%%
+%% Gabriel L G da Silva
+%% Gabriel N R Fonseca
+
+
+%% Prova de corretudo de algoritmo Mergesort
+merge_sort_correctness : THEORY
+BEGIN
+
+IMPORTING sorting, mergesort
+
+l, l1, l2 : VAR list[nat]
+
+merge_preserves_len : LEMMA
+FORALL (l1, l2 : list[nat]):
+    length(l1) + length(l2) = length(merge(l1, l2))
+
+merge_permutes : LEMMA
+FORALL (l1, l2 : list[nat]):
+    permutations(append(l1, l2), merge(l1, l2))
+
+merge_keeps_sorted : LEMMA
+FORALL (l1, l2 : list[nat]):
+    is_sorted?(l1) AND is_sorted?(l2) IMPLIES is_sorted?(merge(l1, l2))
+        
+mergesort_sorts : THEOREM
+FORALL (l : list[nat]):
+    LET l1 = merge_sort(l) IN
+    	is_sorted?(l1) AND permutations(l, l1)
+	
+END merge_sort_correctness
