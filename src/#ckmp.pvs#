@@ -1,0 +1,56 @@
+kmp: THEORY
+ BEGIN
+
+ lps, answer : VAR list[nat]
+ pattern, text : VAR list[string]
+ i, j, c, p : VAR nat
+
+ adjust_index_lps(j, i, pattern, lps) : RECURSIVE nat =
+     IF j = 0 OR nth(pattern, i) = nth(pattern, j) THEN j
+     ELSE adjust_index_lps(nth(lps, j-1), i, pattern, lps)
+     ENDIF
+ MEASURE length(pattern)
+
+ adjust_index_kmp(i, j, pattern, text, lps) : RECURSIVE nat =
+     IF j = 0 OR nth(pattern, j) = nth(text, i) THEN j
+     ELSE adjust_index_kmp(j, nth(lps, j-1), pattern, text, lps)
+     ENDIF
+ MEASURE length(pattern)
+
+ prefix_func(i, j, pattern, lps, p) : RECURSIVE (list[nat], nat) =
+     IF i >= length(pattern) THEN (lps, p)
+     ELSE LET x = adjust_index_lps(j, i, pattern, lps) IN
+	 IF nth(pattern, i) = nth(pattern, x) THEN
+	    prefix_func(i+1, x+1, pattern, append(lps, cons(x+1, null)))
+	 ELSE
+	    prefix_func(i+1, x, pattern, append(lps, cons(x, null)))
+	 ENDIF
+     ENDIF
+ MEASURE length(pattern)
+
+ kmp_search(pattern, text, lps, i, j, answer, c) : RECURSIVE (list[nat], nat) =
+     IF i >= length(text) THEN (answer, c)
+     ELSE LET x = adjust_index_kmp(i, j, pattern, text, lps) IN
+         IF nth(pattern, x) = nth(text, i) THEN
+	     IF x+1 = length(pattern) THEN
+	     	kmp_search(pattern, text, lps, i+1, nth(lps, x), append(answer, cons(i-length(pattern)+1, null)), c+1)
+	     ELSE
+		kmp_search(pattern, text, lps, i+1, x+1, answer, c+1)
+	     ENDIF
+         ELSE
+	     IF x = length(pattern) THEN
+		kmp_search(pattern, text, lps, i+1, nth(lps, x-1), append(answer, cons(i-length(pattern)+1, null)), c+1)
+	     ELSE
+		kmp_search(pattern, text, lps, i+1, x, answer, c+1)
+	     ENDIF
+	 ENDIF
+     ENDIF
+Measure length(text)
+
+ kmp(pattern, text) : (list[nat], nat) =
+     LET p = prefix_func(1, 0, pattern, cons(0, null), 0) IN  
+         LET s = kmp_search(pattern, text, p`1, 0, 0, null, 0) IN
+	     (s`1, s`2+p`2) 
+	  
+
+END kmp

@@ -1,0 +1,29 @@
+cmergesort : THEORY
+
+BEGIN
+
+IMPORTING sorting
+l,l1,l2 : VAR list[nat]
+
+% Merging (sorted lists)
+
+cmerge(l1, l2 : list[nat], c : nat) : RECURSIVE [list[nat], nat] =
+    IF null?(l1) OR null?(l2) THEN (append(l1, l2), c)
+    ELSIF car(l1) <= car(l2) THEN
+        LET aux = cmerge(cdr(l1), l2, c+1) IN (cons(car(l1), aux`1), aux`2+1)
+    ELSE LET aux = cmerge(l1, cdr(l2), c+1) IN (cons(car(l2), aux`1), aux`2+1)
+    ENDIF
+MEASURE length(l1) + length(l2)
+
+%%%%%%% merge_sort, the main function, sorts a list recursively 
+%%%%%%% using the function merge.
+cmerge_sort(l : list[nat]) : RECURSIVE [list[nat], nat] =
+    IF length(l) <= 1 THEN (l, 0)
+    ELSE LET fs = cmerge_sort(prefix(l, floor(length(l) / 2))) IN
+    	 LET sc = cmerge_sort(suffix(l, floor(length(l) / 2))) IN
+	      cmerge(fs`1, sc`1, fs`2 + sc`2)
+    ENDIF 
+MEASURE length(l)
+
+
+end cmergesort

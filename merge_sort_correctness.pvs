@@ -9,7 +9,7 @@
 %% Gabriel N R Fonseca
 
 
-%% Prova de corretudo de algoritmo Mergesort
+%% Prova de corretude do algoritmo Mergesort
 merge_sort_correctness : THEORY
 BEGIN
 
