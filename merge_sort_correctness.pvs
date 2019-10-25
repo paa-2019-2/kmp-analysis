@@ -17,6 +17,11 @@ IMPORTING sorting, mergesort
 
 l, l1, l2 : VAR list[nat]
 
+%% Lemma 0.1
+merge_preserves_occurrences : LEMMA
+FORALL (l1, l2 : list[nat], n : nat):
+    occurrences(l1)(n) + occurrences(l2)(n) = occurrences(merge(l1, l2))(n)
+    
 %% Lemma 1.1: Given l1 and l2 lists of natural numbers as input,
 %% Merge function returns a list l, length(l) = length(l1) + length(l2)
 merge_preserves_len : LEMMA

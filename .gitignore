@@ -9,3 +9,5 @@
 *.out
 *.prf~
 *.pvs~
+.pvscontext
+pvsbin
