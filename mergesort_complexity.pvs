@@ -1,0 +1,18 @@
+mergesort_complexity THEORY
+
+BEGIN
+
+IMPORTING complexity, mergesort, cmergesort
+
+cmerge_equiv_merge: LEMMA
+    FORALL (l1, l2 : list[nat]):
+        merge(l1, l2) = cmerge(l1, l2, 0)`1
+
+count_cmerge_ws: LEMMA
+    FORALL (l1, l2 : list[nat]) : cmerge(l1, l2, 0)`2 = length(
+
+merge_sort_is_nlogn: LEMMA
+    FORALL (l : list[nat]):
+        member(LAMBDA(n : nat): cmerge_sort(l)`2, Omicron(LAMBDA(n : nat) : length(l)*log(length(l))))
+
+END mergesort_complexity

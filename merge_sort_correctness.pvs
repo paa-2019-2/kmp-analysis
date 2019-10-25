@@ -9,7 +9,11 @@
 %% Gabriel N R Fonseca
 
 
+<<<<<<< HEAD
 %% Correctness of MergeSort Algorithm.
+=======
+%% Prova de corretude do algoritmo Mergesort
+>>>>>>> 305f8f4560c9a6e59b59c0b7ac549d7bb07ffa8e
 merge_sort_correctness : THEORY
 BEGIN
 
