@@ -1,5 +1,58 @@
 (merge_sort_correctness
  (merge_preserves_len 0
-  (merge_preserves_len-1 nil 3780873327 ("" (postpone) nil nil) nil
+  (merge_preserves_len-1 nil 3780873327
+   ("" (measure-induct "length(l1) + length(l2)" (l1 l2))
+    (("" (skeep)
+      (("" (expand "merge" 1)
+        (("" (lift-if)
+          (("" (prop)
+            (("1" (hide-all-but 1)
+              (("1" (rewrite "length_append") nil nil)) nil)
+             ("2" (hide-all-but 1)
+              (("2" (rewrite "length_append") nil nil)) nil)
+             ("3" (hide -1 2 3) (("3" (postpone) nil nil)) nil)
+             ("4" (postpone) nil nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   nil shostak))
+ (merge_permutes 0
+  (merge_permutes-1 nil 3780935773 ("" (postpone) nil nil) nil
+   shostak))
+ (mergesort_permutes 0
+  (mergesort_permutes-1 nil 3780950637 ("" (postpone) nil nil) nil
+   shostak))
+ (mergesort_sorts 0
+  (mergesort_sorts-1 nil 3780946864 ("" (postpone) nil nil) nil
+   shostak))
+ (mergesort_correctness 0
+  (mergesort_correctness-1 nil 3780945719
+   ("" (skeep)
+    (("" (split)
+      (("1" (lemma "mergesort_sorts") (("1" (inst?) nil nil)) nil)
+       ("2" (lemma "mergesort_permutes") (("2" (inst?) nil nil)) nil))
+      nil))
+    nil)
+   ((mergesort_permutes formula-decl nil merge_sort_correctness nil)
+    (mergesort_sorts formula-decl nil merge_sort_correctness nil)
+    (number nonempty-type-decl nil numbers nil)
+    (list type-decl nil list_adt nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (PRED type-eq-decl nil defined_types nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (>= const-decl "bool" reals nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil))
    shostak)))
 

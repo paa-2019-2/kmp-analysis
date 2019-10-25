@@ -9,7 +9,7 @@
 %% Gabriel N R Fonseca
 
 
-%% Prova de corretudo de algoritmo Mergesort
+%% Correctness of MergeSort Algorithm.
 merge_sort_correctness : THEORY
 BEGIN
 
@@ -17,21 +17,46 @@ IMPORTING sorting, mergesort
 
 l, l1, l2 : VAR list[nat]
 
+%% Lemma 1.1: Given l1 and l2 lists of natural numbers as input,
+%% Merge function returns a list l, length(l) = length(l1) + length(l2)
 merge_preserves_len : LEMMA
 FORALL (l1, l2 : list[nat]):
     length(l1) + length(l2) = length(merge(l1, l2))
 
+%% Lemma: 1.2: Given l1 and l2 lists of natural numbers as input,
+%% Merge function returns a list l permutation of l1 + l2.
 merge_permutes : LEMMA
 FORALL (l1, l2 : list[nat]):
     permutations(append(l1, l2), merge(l1, l2))
 
-merge_keeps_sorted : LEMMA
+%% Lemma: 1.3: Given l1 and l2 sorted lists of natural numbers as input,
+%% Merge function returns a sorted list.
+merge_keep_sorted : LEMMA
 FORALL (l1, l2 : list[nat]):
     is_sorted?(l1) AND is_sorted?(l2) IMPLIES is_sorted?(merge(l1, l2))
-        
-mergesort_sorts : THEOREM
+
+%% Lemma 2.1: Given a list l of natural numbers as input,
+%% MergeSort returns a list l', length(l) = length(l')
+mergesort_preserves_len: LEMMA
+FORALL(l : list[nat]):
+    length(l) = length(merge_sort(l))
+
+%% Lemma 2.2: Given a list l of natural numbers as input,
+%% MergeSort returns a permutation of l.
+mergesort_permutes : LEMMA
 FORALL (l : list[nat]):
-    LET l1 = merge_sort(l) IN
-    	is_sorted?(l1) AND permutations(l, l1)
+    permutations(l, merge_sort(l))
+
+%% Lemma 2.3: Given a list l of natural numbers as input,
+%% MergeSort returns a sorted list.
+mergesort_sorts : LEMMA
+FORALL (l : list[nat]):
+    is_sorted?(merge_sort(l))
+
+%% Theorem 1.1: Given a list l of natural numbers as input,
+%% MergeSort returns a sorted list l' permutation of l.
+mergesort_correctness : THEOREM
+FORALL (l : list[nat]):
+    is_sorted?(merge_sort(l)) AND permutations(l, merge_sort(l))
 	
 END merge_sort_correctness
