@@ -9,5 +9,6 @@
 *.out
 *.prf~
 *.pvs~
+orphaned-proofs.prf
 .pvscontext
 pvsbin

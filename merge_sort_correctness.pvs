@@ -9,11 +9,7 @@
 %% Gabriel N R Fonseca
 
 
-<<<<<<< HEAD
 %% Correctness of MergeSort Algorithm.
-=======
-%% Prova de corretude do algoritmo Mergesort
->>>>>>> 305f8f4560c9a6e59b59c0b7ac549d7bb07ffa8e
 merge_sort_correctness : THEORY
 BEGIN
 
@@ -25,6 +21,11 @@ l, l1, l2 : VAR list[nat]
 merge_preserves_occurrences : LEMMA
 FORALL (l1, l2 : list[nat], n : nat):
     occurrences(l1)(n) + occurrences(l2)(n) = occurrences(merge(l1, l2))(n)
+
+%% Lemma 0.2
+append_null_2 : LEMMA
+FORALL (l : list[nat]):
+    append(null, l) = l
     
 %% Lemma 1.1: Given l1 and l2 lists of natural numbers as input,
 %% Merge function returns a list l, length(l) = length(l1) + length(l2)
