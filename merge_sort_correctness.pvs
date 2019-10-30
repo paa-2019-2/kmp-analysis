@@ -26,7 +26,7 @@ FORALL (l1, l2 : list[nat], n : nat):
 append_null_2 : LEMMA
 FORALL (l : list[nat]):
     append(null, l) = l
-    
+
 %% Lemma 1.1: Given l1 and l2 lists of natural numbers as input,
 %% Merge function returns a list l, length(l) = length(l1) + length(l2)
 merge_preserves_len : LEMMA
@@ -68,5 +68,5 @@ FORALL (l : list[nat]):
 mergesort_correctness : THEOREM
 FORALL (l : list[nat]):
     is_sorted?(merge_sort(l)) AND permutations(l, merge_sort(l))
-	
+    
 END merge_sort_correctness
