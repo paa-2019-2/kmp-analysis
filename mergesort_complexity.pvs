@@ -2,29 +2,23 @@ mergesort_complexity : THEORY
 
 BEGIN
 
-IMPORTING complexity, mergesort, cmergesort
-
-log_auxiliar: LEMMA
-    FORALL (x : posnat) : LOG(x) >= 0
-
-length_auxiliar: LEMMA
-    FORALL (l : list[nat]) : length(l) >= 0
-
-length_x_log: THEOREM
-   FORALL (l : list[nat]) : length(l) * LOG(length(l)) >= 0
+IMPORTING complexity, mergesort, cmergesort, power@log, sorting
     
 cmerge_equiv_merge: LEMMA
     FORALL (l1, l2 : list[nat]):
         merge(l1, l2) = cmerge(l1, l2, 0)`1
 
 count_cmerge_ws: LEMMA
-    FORALL (l1, l2 : list[nat]) : cmerge(l1, l2, 0)`2 <= (length(l1) + length(l2) - 1)
+    FORALL (l1, l2 : list[nat]) : cmerge(l1, l2, 0)`2 <= (length(l1) + length(l2))
 
 cmerge_general_case: LEMMA
-    FORALL (l1, l2 : list[nat]) (c : nat) : cmerge(l1, l2, c)`2 <= (length(l1) + length(l2) - 1 + c)
+    FORALL (l1, l2 : list[nat]) (c : nat) : cmerge(l1, l2, c)`2 <= (length(l1) + length(l2) + c)
+
+merge_sort_ws: LEMMA
+    FORALL (l : list[nat] | length(l) > 0) : cmerge_sort(l)`2 <= length(l) + length(l)*log(2)(length(l))
 
 merge_sort_is_nlogn: LEMMA
-    FORALL (l : list[nat]):
-        member(LAMBDA(n : nat): cmerge_sort(l)`2, Omicron(LAMBDA(n : nat) : length(l)*LOG(length(l))))
+    FORALL (l : list[nat] | length(l) > 0):
+        member(LAMBDA(n : nat): cmerge_sort(l)`2, Omicron(LAMBDA(n : nat) : length(l)*log(2)(length(l))))
 
 END mergesort_complexity
