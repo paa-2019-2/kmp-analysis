@@ -55,7 +55,8 @@
  (merge_sort_is_nlogn_TCC1 0
   (merge_sort_is_nlogn_TCC1-1 nil 3781388187
    ("" (skeep) (("" (typepred l) (("" (grind) nil nil)) nil)) nil)
-   ((null? adt-recognizer-decl "[list -> boolean]" list_adt nil)
+   ((length def-decl "nat" list_props nil)
+    (> const-decl "bool" reals nil)
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (int nonempty-type-eq-decl nil integers nil)
     (>= const-decl "bool" reals nil)
@@ -68,21 +69,122 @@
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
     (list type-decl nil list_adt nil)
     (PRED type-eq-decl nil defined_types nil)
     (number nonempty-type-decl nil numbers nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
+    (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
+     real_types nil)
+    (log const-decl "real" log "power/")
+    (nn_log const-decl "nnreal" nn_log "power/")
+    (log_gt1 const-decl "[{r | r >= 1} -> nnreal]" nn_log "power/")
+    (nnreal_expt const-decl "nnreal" nnreal_expt "power/")
+    (nn_rational_expt const-decl "nnreal" nn_rational_expt "power/")
+    (nn_root const-decl "nnreal" nn_root "power/")
+    (inverse const-decl "D" function_inverse nil)
+    (^ const-decl "real" exponentiation nil)
+    (expt def-decl "real" exponentiation nil)
+    (numerator const-decl "int" rational_props_aux "power/")
+    (denominator const-decl "posnat" rational_props_aux "power/")
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (nnint_plus_posint_is_posint application-judgement "posint"
-     integers nil)
-    (length def-decl "nat" list_props nil))
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (nnrat_times_nnrat_is_nnrat application-judgement "nonneg_rat"
+     rationals nil)
+    (minus_nzint_is_nzint application-judgement "nzint" integers nil))
    nil))
  (merge_sort_is_nlogn 0
+  (no "asdm" 3782145977
+   ("" (expand Omicron)
+    (("" (expand member)
+      (("" (measure-induct "length(l)" l)
+        (("" (skeep)
+          (("" (inst? -1)
+            (("" (split)
+              (("1" (propax) nil nil)
+               ("2" (inst 2 "1000" "1")
+                (("2" (skeep)
+                  (("2" (expand cmerge_sort)
+                    (("2" (lift-if)
+                      (("2" (prop)
+                        (("1" (grind) nil nil)
+                         ("2" (use "cmerge_general_case")
+                          (("2" (lemma "le_cut")
+                            (("2"
+                              (inst -1
+                               "cmerge(cmerge_sort(prefix(x, floor(length(x) / 2)))`1,
+             cmerge_sort(suffix(x, floor(length(x) / 2)))`1,
+             cmerge_sort(prefix(x, floor(length(x) / 2)))`2 +
+              cmerge_sort(suffix(x, floor(length(x) / 2)))`2)`2"
+                               " (length(cmerge_sort(prefix(x, floor(length(x) / 2)))`1) + length(cmerge_sort(suffix(x, floor(length(x) / 2)))`1) + (cmerge_sort(prefix(x, floor(length(x) / 2)))`2 + cmerge_sort(suffix(x, floor(length(x) / 2)))`2))"
+                               "1000 * (length(x) * log(2)(length(x)))")
+                              (("2"
+                                (split)
+                                (("1" (propax) nil nil)
+                                 ("2" (propax) nil nil)
+                                 ("3"
+                                  (hide 2 3)
+                                  (("3"
+                                    (lemma cmergesort_length)
+                                    (("3"
+                                      (lemma cmergesort_length)
+                                      (("3"
+                                        (inst
+                                         -1
+                                         "prefix(x, floor(length(x) / 2))")
+                                        (("3"
+                                          (inst
+                                           -2
+                                           "suffix(x, floor(length(x) / 2))")
+                                          (("3"
+                                            (replaces)
+                                            (("3"
+                                              (use "length_suffix")
+                                              (("3"
+                                                (use "length_prefix")
+                                                (("3"
+                                                  (replaces)
+                                                  (("3"
+                                                    (assert)
+                                                    (("3"
+                                                      (postpone)
+                                                      nil
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   nil shostak)
   (merge_sort_is_nlogn-1 nil 3781429289
    ("" (induct l)
     (("1" (grind) nil nil) ("2" (skeep) (("2" (postpone) nil nil)) nil)
