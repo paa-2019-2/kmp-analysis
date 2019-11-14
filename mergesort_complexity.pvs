@@ -4,6 +4,9 @@ BEGIN
 
 IMPORTING complexity, mergesort, cmergesort, power@log, sorting
 
+length_2_k: AXIOM
+     FORALL(l : list[nat]) : EXISTS(k : nat) : length(l) = 2^k
+
 cmerge_equiv_merge: LEMMA
     FORALL (l1, l2 : list[nat]):
         merge(l1, l2) = cmerge(l1, l2, 0)`1
@@ -19,6 +22,9 @@ cmergesort_length: LEMMA
 
 merge_sort_ws: LEMMA
     FORALL (l : list[nat] | length(l) > 0)  : cmerge_sort(l)`2 <= length(l) + length(l)*log(2)(length(l))
+
+merge_sort_sfx_pfx: LEMMA
+    FORALL (l : list[nat]) : cmerge_sort(prefix(l, floor(length(l)/2)))`2 + cmerge_sort(suffix(l, floor(length(l)/2)))`2 = cmerge_sort(l)`2
 
 merge_sort_is_nlogn: LEMMA
     FORALL (l : list[nat] | length(l) > 0):
