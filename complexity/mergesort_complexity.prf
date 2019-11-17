@@ -24,7 +24,7 @@
       nil))
     nil)
    ((list type-decl nil list_adt nil)
-    (PRED type-eq-decl nil defined_types nil) nil
+    (PRED type-eq-decl nil defined_types nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (merge def-decl "list[nat]" mergesort nil)
@@ -68,7 +68,7 @@
    ((nnint_plus_nnint_is_nnint application-judgement "nonneg_int"
      integers nil)
     (list type-decl nil list_adt nil)
-    (PRED type-eq-decl nil defined_types nil) nil
+    (PRED type-eq-decl nil defined_types nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (cmerge def-decl "[list[nat], nat]" cmergesort nil)
@@ -110,10 +110,36 @@
   (merge_sort_ws-1 nil 3782076205
    ("" (induct l)
     (("1" (assert) nil nil)
-     ("2" (expand "length" 1 1) (("2" (propax) nil nil)) nil)
+     ("2" (expand "length") (("2" (propax) nil nil)) nil)
      ("3" (skeep)
-      (("3" (lemma cmerge_general_case)
-        (("3" (expand cmerge_sort) (("3" (postpone) nil nil)) nil))
+      (("3" (expand "cmerge_sort" 1)
+        (("3" (lift-if)
+          (("3" (prop)
+            (("1" (grind) nil nil)
+             ("2" (lemma "cmerge_general_case")
+              (("2"
+                (inst -1 "cmerge_sort(prefix(cons(cons1_var, cons2_var),
+                                floor(length(cons(cons1_var, cons2_var))
+                                      /
+                                      2)))`1"
+                 "cmerge_sort(suffix(cons(cons1_var, cons2_var),
+                                floor(length(cons(cons1_var, cons2_var))
+                                      /
+                                      2)))`1"
+                 " cmerge_sort(prefix(cons(cons1_var, cons2_var),
+                                floor(length(cons(cons1_var, cons2_var))
+                                      /
+                                      2)))`2
+              +
+              cmerge_sort(suffix(cons(cons1_var, cons2_var),
+                                 floor(length(cons(cons1_var, cons2_var))
+                                       /
+                                       2)))`2")
+                (("2" (assert) (("2" (postpone) nil nil)) nil)) nil))
+              nil)
+             ("3" (grind) nil nil) ("4" (grind) nil nil))
+            nil))
+          nil))
         nil))
       nil))
     nil)
@@ -231,8 +257,7 @@
     (>= const-decl "bool" reals nil)
     (nonneg_real nonempty-type-eq-decl nil real_types nil)
     (list type-decl nil list_adt nil)
-    (PRED type-eq-decl nil defined_types nil)
-    (every adt-def-decl "boolean" list_adt nil)
+    (PRED type-eq-decl nil defined_types nil) nil
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
@@ -253,8 +278,7 @@
     (nnrat_times_nnrat_is_nnrat application-judgement "nonneg_rat"
      rationals nil)
     (minus_nzint_is_nzint application-judgement "nzint" integers nil)
-    (log const-decl "real" log "power/")
-    (nn_log const-decl "nnreal" nn_log "power/")
+    nil (nn_log const-decl "nnreal" nn_log "power/")
     (log_gt1 const-decl "[{r | r >= 1} -> nnreal]" nn_log "power/")
     (nnreal_expt const-decl "nnreal" nnreal_expt "power/")
     (nn_rational_expt const-decl "nnreal" nn_rational_expt "power/")

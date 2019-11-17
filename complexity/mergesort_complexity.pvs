@@ -3,7 +3,6 @@ mergesort_complexity : THEORY
 BEGIN
 
 IMPORTING complexity, mergesort, cmergesort, power@log, sorting
-    
 cmerge_equiv_merge: LEMMA
     FORALL (l1, l2 : list[nat]):
         merge(l1, l2) = cmerge(l1, l2, 0)`1
