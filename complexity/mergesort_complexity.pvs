@@ -3,7 +3,6 @@ mergesort_complexity : THEORY
 BEGIN
 
 IMPORTING complexity, mergesort, cmergesort, power@log, sorting
-    
 cmerge_equiv_merge: LEMMA
     FORALL (l1, l2 : list[nat]):
         merge(l1, l2) = cmerge(l1, l2, 0)`1
@@ -14,14 +13,10 @@ cmerge_general_case: LEMMA
     FORALL (l1, l2 : list[nat]) (c : nat) : cmerge(l1, l2, c)`2 <= (length(l1) + length(l2) + c)
 
 merge_sort_ws: LEMMA
-    FORALL (l : list[nat] | length(l) > 0) : cmerge_sort(l)`2 <= length(l) + length(l)*log(2)(length(l))
+    FORALL (l : list[nat] | length(l) > 1) : cmerge_sort(l)`2 <= length(l) + length(l)*log(2)(length(l))
 
-merge_sort_is_nlogn: LEMMA
-    FORALL (l : list[nat] | length(l) > 1):
-        member(LAMBDA(n : nat): cmerge_sort(l)`2, Omicron(LAMBDA(n : nat) : length(l)*log(2)(length(l))))
-
-merge_sort_length_1_is_nlogn: LEMMA
-    FORALL (l: list[nat] | length(l) = 1):
-        member(LAMBDA(n : nat): cmerge_sort(l)`2, Omicron(LAMBDA(n : nat) : length(l)*log(2)(length(l))))
-
+merge_sort_is_nlgn : LEMMA
+    FORALL (n : nat | n > 1):
+        member(LAMBDA(n : nat): (n * log(2)(n) + n), Omicron(LAMBDA(n : nat): n * log(2)(n)))
+	
 END mergesort_complexity

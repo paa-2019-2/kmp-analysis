@@ -1,0 +1,35 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Grupo de Teoria da Computacao, Universidade de Brasilia
+%%% Thiago M.F. Ramos, Ariane A. Almeida & 
+%%% Ana C. R. Oliveira Valverde & M. Ayala-Rincon
+%%% Last modification:  September 25, 2013
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mergesort : THEORY
+
+BEGIN
+
+IMPORTING sorting
+l,l1,l2 : VAR list[nat]
+
+% Merging (sorted lists)
+
+merge(l1, l2 : list[nat]) : RECURSIVE list[nat] =
+IF null?(l1) OR null?(l2) THEN append(l1, l2)
+ELSIF car(l1) <= car(l2) THEN cons(car(l1), merge(cdr(l1),l2))
+ELSE cons(car(l2), merge(l1, cdr(l2)))
+ENDIF
+MEASURE length(l1) + length(l2)
+
+%%%%%%% merge_sort, the main function, sorts a list recursively 
+%%%%%%% using the function merge.
+merge_sort(l) : RECURSIVE list[nat] =
+ IF length(l) <= 1 THEN l 
+ ELSE merge(merge_sort(prefix(l,floor(length(l) / 2))), 
+                 merge_sort(suffix(l,floor(length(l)/2))))
+ ENDIF 
+MEASURE length(l)
+
+
+end mergesort
+
