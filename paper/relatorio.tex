@@ -7,6 +7,13 @@
 \usepackage[all]{xy}
 \usepackage{color}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{amsthm}
+
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{corollary}{Corolário}[theorem]
+\newtheorem{lemma}[theorem]{Lema}
 
 \title{{\large Universidade de Brasília \\ Instituto de Ciências Exatas \\
 Departamento de Ciência da Computação} \\[1cm]
@@ -40,19 +47,19 @@ O arquivo é dado como entrada para o provador que requisita as regras a serem a
 PVS tratam-se simplesmente de regras da lógica de primeira-ordem. O PVS permite também que uma prova possa ser revisitada em uma representação gráfica que
 revela cada passo bem como suas depedências.
 
-O objetivo deste trabalho é analisar assintóticamente o custo de tempo e a corretude do algoritmo de \textit{pattern matching}
-desenvolvido por Donald Knuth, James Morris e Vaughan Pratt (KMP) e publicado em 1977. A escolha do KMP como objeto de estudo se deu pelo seu grande conjunto
-de aplicações práticas e por se tratar de um algoritmo muito inteligente para um problema onde a solução ingênua pode facilmente ter comportamento assintótico
-de ordem quadrática ou cúbica. A análise aqui feita apresentará a ideia de prova que será verificada via PVS. 
-A formalização completa pode ser encontrada em \url{https://github.com/paa-2019-2/kmp-analysis}.
+O objetivo deste trabalho é analisar assintóticamente o custo de tempo e a corretude do algoritmo de ordenação \textit{Merge Sort} via PVS. O Merge Sort foi criado
+em meados de 1945 por John Von Neumann. A escolha deste algoritmo se deu por ser de implementação muito simples para múltiplas estruturas de dados tais como
+vetores e listas ligadas e por, ainda sim, ser um algoritmo com múltiplas aplicações dado o seu custo de execução. Este relatório apresentará a ideia de prova
+formalizada via provador e fica a critério do leitor visitar o repositório para verificar a mesma. A formalização completa pode ser encontrada em \url{github.com/paa-2019-2/levi-nunes}.
 
-Esse documento se organizará, daqui em diante, primeiro por um capítulo de revisão teórica. Em seguida, no capitulo 3, a apresentação do algoritmo KMP
-apoiado por instâncias de entradas para melhor entendimento. O capitulo 4 apresentará a ideia abordada pelos autores para a análise de assintótica do algoritmo
-bem como argumentação sobre o pior e o melhor caso do mesmo. O capitulo 5 - Correção do algoritmo KMP - apresentará, como o capitulo anterior, a ideia abordada
+Esse documento se organizará, daqui em diante, por um capítulo \ref{explaining} de revisão teórica. Em seguida, no capitulo \ref{merge_sort}, a apresentação do algoritmo Merge Sort. 
+O capitulo \ref{complexity} apresentará a ideia abordada pelos autores para a análise de assintótica do algoritmo
+bem como argumentação sobre o pior e o melhor caso do mesmo. O capitulo \ref{correctness} apresentará, como o capitulo anterior, a ideia abordada
 e sua argumentação. Por fim, o capitulo de conclusão, apresentará um resumo dos resultados aqui encontrados acompanhado de um meta-texto discorrendo sobre
 as principais dificuldades do trabalho com o verificador formal de provas.
 
 \section{Revisão teórica}
+\label{explaining}
 
 Este capítulo apresentará conceitos importantes para o entedimento do que se segue nos capitulos posteriores. Caso sinta-se a vontade com o conceito, 
 cujo o nome será enunciado no título de cada subseção, não há nenhum mal em pular. Cada um dos conceitos será apresentado de maneira simples mais preocupado
@@ -64,13 +71,106 @@ se aprofundar ou que não acharam que o texto de uma ou mais subseções foi suf
 
 \subsection{}
 
-\section{O algoritmo KMP}
+\section{O algoritmo Merge Sort}
+\label{merge_sort}
 
-\section{Análise assintótica do KMP}
+O algoritmo fundamenta-se na técnica Dividir-para-Conquistar. A técnica consiste em, dada uma instância do problema
+quebra-la em partes até que as mesmas sejam fáceis ou triviais de se resolver, por fim, cada pequena solução é combinada a fim
+de obter a solução para o problema maior. Apesar de parecer similar, esta técnica é bem diferente de programação dinâmica pois
+cada subproblema é disjunto dos demais. Desta forma, o algoritmo recebe uma lista como entrada uma lista de elementos comparáveis
+e divide tal lista até que cada sublista possua tamanho unitário - trivialmente ordenável - e então combina as listas para obter
+a lista de entrada ordenada. O processo pode ser visualizado na figura \ref{fig:merge_sort_example} onde a parte superior diz respeito
+a dividir e a parte inferior diz respeito a conquista.
 
-\section{Corretude do algoritmo KMP}
+\begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{figures/merge.png}
+        \caption{Ordenação da instância [38, 27, 43, 3, 9, 82, 10]}
+        \label{fig:merge_sort_example}
+\end{figure}
 
+Por mais poderosa que seja a ideia, a implementação do Merge Sort é bem simples e pode ser deduzida a partir do pseudo-código abaixo, 
+para fins de facilitar a leitura, denotamos a cabeça da lista $\tau$ como $car(\tau)$ e a sua calda como $cdr(\tau)$, o operador $+$
+significa inserção de um elemento no início de uma lista ou a concanetação de duas listas. 
+
+\begin{algorithm}[H]
+        \KwData{$\rho, \eta : Sorted\ lists $}
+        \KwResult{Sorted merge of $\rho$ and $\eta$}
+        \eIf{$\rho = Nil$ or $\eta = Nil$}{
+            $\textbf{return}\  \rho + \eta$
+        }{
+            \eIf{$car(\rho) \leq car(\eta)$}{
+                $\textbf{return}\ car(\rho) + MERGE(cdr(\rho) ,\ \eta)$
+            }{
+                $\textbf{return}\ car(\eta) + MERGE(\rho,\ cdr(\eta))$
+            }
+        }
+        \caption{MERGE}
+\end{algorithm}
+
+\begin{algorithm}[H]
+        \KwData{$\tau : List\ of\ comparable\ elements $}
+        \KwResult{$Sorted\ permutation\ of\ \tau$}
+        \eIf{$length(\tau) \leq 1$}{
+                $\textbf{return}\ \tau$
+        }{
+                $prefix \leftarrow\ MERGESORT(first\_half(\tau))$\;
+                $suffix \leftarrow\ MERGESORT(second\_half(\tau))$\;
+                $\textbf{return}\ MERGE(prefix,\ suffix)$\;  
+        }
+        \caption{MERGESORT}
+\end{algorithm}
+\section{Análise assintótica do Merge Sort}
+\label{complexity}
+
+\section{Corretude do algoritmo Merge Sort}
+\label{correctness}
+
+A corretude de um algoritmo passa por demonstrar que o mesmo possui certas características independente da instância e que essas características
+se verifiquem antes, durante e depois da execução. Para um algoritmo de ordenação, é esperado que o mesmo responda para qualquer entrada uma permutação
+ordenada da mesma, isto é, a saída não só deve estar ordenada como também o número de ocorrências de cada elemento deve ser o mesmo da lista de entrada.
+Para verificar a corretude do Merge Sort, basta demonstrar que o mesmo possui essas duas características, o que nos leva ao seguinte teorema:
+
+\begin{theorem}
+        Para qualquer lista $\tau$, a resultante de $MERGESORT(\tau)$ é uma lista ordenada e uma permutação de $\tau$.
+\end{theorem}
+
+O teorema acima ficará sem uma prova por ora, é facil ver que basta demonstrar as duas condições sobre a resultante que o teorema passa a valer. Para isto,
+daqui em diante serão demonstrados resultados interessantes sobre o Merge Sort e sua função de Merge que levarão a validação do teorema e por fim demonstrarão
+a corretude do algoritmo.
+
+\begin{lemma}
+        Para quaisquer entradas $\rho$ e $\eta$, se ambas as listas estão ordenadas então
+        a resultante de $MERGE(\rho,\ \eta)$ também será uma lista ordenada. 
+\end{lemma}
+
+\begin{proof}
+        Basta demonstrar que para qualquer iteração de $MERGE$, o menor elementos dentre ambas as listas é escolhido para inserção no final
+        da lista parcialmente resultante. Uma vez que ambas as listas são ordenadas, necessariamente o menor elemento será a cabeça de $\rho$ ou de $\eta$.
+        Utilizando da definição de $MERGE$ e induzindo sobre o tamanho de ambas as listas 3 situações emergem:
+        \begin{enumerate}
+                \item Alguma das listas $\rho$ e $\eta$ tem tamanho 0.
+                \item A cabeça de $\rho$ é menor ou igual que a cabeça de $\eta$.
+                \item A cabeça de $\rho$ é maior que a cabeça de $\eta$.
+        \end{enumerate}
+
+        Na primeira situação, no máximo uma das listas possui elementos, então o elemento tomado para a composição da lista resultante será a cabeça
+        (o menor elemento) daquela que ainda não é vazia, por conveniência, o algoritmo já retorna a lista inteira, mas se de fato tivesse que escolher apenas
+        um, seria o menor disponível. O segundo e o terceiro caso são similares, a cabeça de $\rho$ é igual ao menor elemento de $\rho$ e o mesmo vale para a cabeça
+        de $\eta$, logo, o menor entre os ambos será o menor dentre todos e este será escolhido para a inserção ao final da lista resultante, a chamada recursiva 
+        posterior cai novamente em algum dos 3 casos.
+
+\end{proof}
+
+\begin{lemma}
+        Para qualquer lista $\tau$, a resultante de $MERGESORT(\tau)$ é uma permutação de $\tau$.
+\end{lemma}
+
+\begin{proof}
+        
+\end{proof}
 \section{Conclusão}
+\label{conclusion}
 
 \bibliographystyle{acm}
 \bibliography{reference}
