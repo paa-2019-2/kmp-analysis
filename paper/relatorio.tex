@@ -129,17 +129,40 @@ significa inserção de um elemento no início de uma lista ou a concanetação 
 A corretude de um algoritmo passa por demonstrar que o mesmo possui certas características independente da instância e que essas características
 se verifiquem antes, durante e depois da execução. Para um algoritmo de ordenação, é esperado que o mesmo responda para qualquer entrada uma permutação
 ordenada da mesma, isto é, a saída não só deve estar ordenada como também o número de ocorrências de cada elemento deve ser o mesmo da lista de entrada.
-Para verificar a corretude do Merge Sort, basta demonstrar que o mesmo possui essas duas características, o que nos leva ao seguinte teorema:
 
-\begin{theorem}
-        Para qualquer lista $\tau$, a resultante de $MERGESORT(\tau)$ é uma lista ordenada e uma permutação de $\tau$.
-\end{theorem}
-
-O teorema acima ficará sem uma prova por ora, é facil ver que basta demonstrar as duas condições sobre a resultante que o teorema passa a valer. Para isto,
-daqui em diante serão demonstrados resultados interessantes sobre o Merge Sort e sua função de Merge que levarão a validação do teorema e por fim demonstrarão
-a corretude do algoritmo.
+A análise de MERGESORT nos leva a uma série de resultados intermediários que fortalecem a argumentação da corretude do algoritmo. Tais resultados estão expostos
+abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no repositório apresentado previamente na introdução deste texto.
 
 \begin{lemma}
+\label{merge-preserves-occurrences}
+        Para quaisquer $\rho$ e $\eta$, listas, e $n$ valor, o número de ocorrências de $n$ em $MERGE(\rho,\ \eta)$ é igual ao número de ocorrências
+        de $n$ em $\rho$ mais o número de ocorrências de $n$ em $\eta$.
+\end{lemma}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{lemma}
+\label{merge-preserves-length}
+        Para quaisquer entradas $\rho$ e $\eta$, listas, o tamanho da lista resultante de $MERGE(\rho,\ \eta)$ é a soma
+        dos tamanhos de $\rho$ e $\eta$.
+\end{lemma}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{lemma}
+\label{merge-is-permutation}
+        Para quaisquer entradas $\rho$ e $\eta$, $MERGE(\rho,\ \eta)$ é uma permutação de concanetação de $\eta$ e $\rho$.
+\end{lemma}
+\begin{proof}
+        
+\end{proof}
+
+\begin{lemma}
+\label{merge-of-sorted-is-sorted}
         Para quaisquer entradas $\rho$ e $\eta$, se ambas as listas estão ordenadas então
         a resultante de $MERGE(\rho,\ \eta)$ também será uma lista ordenada. 
 \end{lemma}
@@ -163,12 +186,41 @@ a corretude do algoritmo.
 \end{proof}
 
 \begin{lemma}
+\label{mergesort-preserves-length}
+        Para qualquer entrada $\tau$, lista, o tamanho de $\tau$ é igual ao tamanho de $MERGESORT(\tau)$.
+\end{lemma}
+
+\begin{proof}
+        
+\end{proof}
+
+\begin{lemma}
+\label{mergesort-is-permutation}
         Para qualquer lista $\tau$, a resultante de $MERGESORT(\tau)$ é uma permutação de $\tau$.
 \end{lemma}
 
 \begin{proof}
         
 \end{proof}
+
+\begin{lemma}
+\label{mergesort-sorts}
+        Para qualquer lista $\tau$, a resultante de $MERGESORT(\tau)$ é uma lista ordenada.
+\end{lemma}
+
+\begin{proof}
+        
+\end{proof}
+
+\begin{theorem}
+\label{mergesort-is-correct}
+        Para qualquer lista $\tau$, a resultante de $MERGESORT(\tau)$ é uma permutação ordenada de $\tau$.
+\end{theorem}
+
+\begin{proof}
+        
+\end{proof}
+
 \section{Conclusão}
 \label{conclusion}
 
