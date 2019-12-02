@@ -2,7 +2,12 @@ mergesort_complexity : THEORY
 
 BEGIN
 
-IMPORTING complexity, mergesort, cmergesort, power@log, sorting
+IMPORTING complexity, mergesort, cmergesort, power@log, sorting, merge_sort_correctness
+
+length_pot_2: AXIOM
+    FORALL (l : list[nat]):
+        EXISTS (k : nat):
+	    length(l) = 2^k
 
 cmerge_equiv_merge: LEMMA
     FORALL (l1, l2 : list[nat], c : nat):
@@ -14,11 +19,11 @@ count_cmerge_ws: LEMMA
 cmerge_general_case: LEMMA
     FORALL (l1, l2 : list[nat]) (c : nat) : cmerge(l1, l2, c)`2 <= (length(l1) + length(l2) + c)
 
-cmerge_sort_length: LEMMA
-    FORALL (l : list[nat]) : length(cmerge_sort(l)`1) = length(l)
-
 cmerge_sort_equiv_merge_sort: LEMMA
     FORALL (l : list[nat]) : cmerge_sort(l)`1 = merge_sort(l)
+
+cmerge_sort_length: LEMMA
+    FORALL (l : list[nat]) : length(cmerge_sort(l)`1) = length(l)
 
 merge_sort_ws: LEMMA
     FORALL (l : list[nat] | length(l) > 0) : cmerge_sort(l)`2 <= length(l) + length(l)*log(2)(length(l))
