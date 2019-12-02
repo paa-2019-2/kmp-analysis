@@ -1,0 +1,63 @@
+\section{Análise de complexidade do Merge Sort}
+\label{complexity}
+A complexidade de um algoritmo de ordenação se baseia em contar 
+o número de comparações realizadas durante sua execução. 
+Neste sentido, existe uma classificação de algoritmos de ordenação chamada
+algoritmos de ordenação por comparação, que, segundo Cormen \cite{cormen2012algoritmos},
+são algoritmos baseados em comparações entre dois elementos e 
+efetuam pelo menos \textbf{\textit{$\Omega$(n lg n)}} comparações
+no pior caso. 
+
+O Merge Sort é um algoritmo de ordenação por comparação, e portanto,
+sua análise de complexidade se baseia em contar quantas comparações
+são efetuadas para ordenar uma lista de tamanho \textit{\textbf{n}}. Para
+tanto, foram necessárias modificações no algoritmo, de forma a incluir
+um contador de comparações. O pseudo-código abaixo representa a ideia 
+da inclusão de um contador no Merge Sort:
+$\newline$
+\begin{algorithm}[H]
+  \KwData{$\rho, \eta : Sorted\ lists,\ \sigma : natural $}
+  \KwResult{$Sorted\ merge\ of\ \rho\ and\ \eta,\ number\ of\ comparisons$}
+  \eIf{$\rho = Nil$ or $\eta = Nil$}{
+      $\textbf{return}\  \rho + \eta,\ \sigma$ 
+  }{
+      \eIf{$car(\rho) \leq car(\eta)$}{
+          $\textbf{return}\ car(\rho) + MERGE(cdr(\rho) ,\ \eta,\ \sigma + 1)$
+      }{
+          $\textbf{return}\ car(\eta) + MERGE(\rho,\ cdr(\eta),\ \sigma + 1)$
+      }
+  }
+  \caption{COUNT-MERGE}
+\end{algorithm}
+$\newline$
+$\newline$
+\begin{algorithm}[H]
+  \KwData{$\tau : List\ of\ comparable\ elements$}
+  \KwResult{$Sorted\ permutation\ of\ \tau,\ number\ of\ comparisons $}
+  \eIf{$length(\tau) \leq 1$}{
+          $\textbf{return}\ \tau, \ 0 $
+  }{
+          $prefix,\ \sigma \leftarrow\ MERGESORT(first\_half(\tau))$\;
+          $suffix,\ \iota \leftarrow\ MERGESORT(second\_half(\tau))$\;
+          $\textbf{return}\ MERGE(prefix,\ suffix,\ \sigma + \iota)$\;  
+  }
+  \caption{COUNT-MERGESORT}
+\end{algorithm}
+$\newline$
+$\newline$
+A adição de um contador no Merge Sort permite a análise de comparações, porém,
+não é possível assegurar que o contador não inseriu um erro no algoritmo. Portanto,
+é necessário provar os seguintes lemas, que asseguram a equivalência entre o 
+Merge Sort com e sem contador:
+
+\begin{lemma}
+    \label{cmerge_equiv_merge}
+    $\forall$ $\rho$, $\eta$ listas de naturais, a resultante de $MERGE(\rho,\ \eta)$
+    é igual à resultante de $COUNT-MERGE(\rho,\ \eta, \sigma)$, a não ser por $\sigma$.
+\end{lemma}
+
+\begin{lemma}
+  \label{cmergesort_equiv_mergesort}
+  $\forall$ $\rho$, lista de naturais, a resultante de $MERGESORT(\rho)$
+  é igual à resultante de $COUNT-MERGESORT(\rho)$, a não ser pelo contador retornado.
+\end{lemma}
