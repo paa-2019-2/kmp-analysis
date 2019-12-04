@@ -158,7 +158,7 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
         Para quaisquer entradas $\rho$ e $\eta$, $MERGE(\rho,\ \eta)$ é uma permutação de concanetação de $\eta$ e $\rho$.
 \end{lemma}
 \begin{proof}
-        
+        Tomando $\rho$ e $\eta$ quaisquer, 
 \end{proof}
 
 \begin{lemma}
@@ -209,7 +209,16 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
 \end{lemma}
 
 \begin{proof}
-        
+        Aplicando indução forte sobre o tamanho da lista $\tau$ chegamos a dois casos a serem demonstrados.
+        Se a lista tem tamanho menor ou igual à um, a mesma está trivialmente ordenada. Caso contrário,
+        o lema \ref{merge-of-sorted-is-sorted} nos garante e o merge das chamadas recursivas de $MERGESORT$
+        para cada uma das metades de $\tau$, $prefix\ e\ suffix$,  tem como resultado uma lista ordenada
+        desde que $MERGESORT(prefix)$ e $MERGESORT(suffix)$ sejam ambas listas ordenadas.
+
+        Aqui podemos nos valer de propriedade desta indução forte que diz que qualquer lista $\phi$ tal que
+        o tamanho da mesma seja estritamente menor que o tamanho de $\tau$, então $MERGESORT(\phi)$ é uma lista
+        ordenada. Sabemos que $\tau$ tem tamanho maior ou igual que 2, logo qualquer metade desta lista
+        terá tamanho estritamente menor que $\tau$.
 \end{proof}
 
 \begin{theorem}
@@ -218,7 +227,8 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
 \end{theorem}
 
 \begin{proof}
-        
+        Aplicando os lemas \ref{mergesort-sorts} e \ref{mergesort-is-permutation}, as propriedades as quais
+        deseja-se demonstrar tornam-se evidentes. 
 \end{proof}
 
 \section{Conclusão}
