@@ -14,6 +14,8 @@
 \newtheorem{theorem}{Teorema}[section]
 \newtheorem{corollary}{Corolário}[theorem]
 \newtheorem{lemma}[theorem]{Lema}
+\theoremstyle{definition}
+\newtheorem{definition}{Definição}[section]
 
 \title{{\large Universidade de Brasília \\ Instituto de Ciências Exatas \\
 Departamento de Ciência da Computação} \\[1cm]
@@ -66,10 +68,43 @@ cujo o nome será enunciado no título de cada subseção, não há nenhum mal e
 com ser inteligível para o leitor do que com um profundo formalismo. Em compensação, uma boa bibliografia de apoio será indicada para aqueles interessados em 
 se aprofundar ou que não acharam que o texto de uma ou mais subseções foi suficiente.
 
-// Se não existir nada além de Notação Assintótica, converter pra uma seção de revisão sobre Notação assintótica.
 \subsection{Notação assintótica}
 
-\subsection{}
+A notação assintótica é uma forma de descrever o comportamento de uma função matemática para um $n$ inteiros suficientemente
+grandes. Neste trabalho, interessa-se somente funções eventualmente crescentes uma vez que a intenção é analisar custo de execucação
+de algoritmos. Segue-se então as definições:
+
+\theoremstyle{definition}
+\begin{definition}
+        $O(g(n)) := \{f(n)\ |\ 0 \leq f(n) \leq c * g(n), c\ constante\ e\ n \geq n_0\}$        
+\end{definition}
+
+Uma função $f(n)$ que descreve o custo de um algoritmo A pertence à $O(g(n))$ se, e somente se, para entradas 
+suficientemente grandes o custo do pior caso do algoritmo é limitado superiormente por uma função da ordem de $g(n)$.
+Isto quer dizer independente da entrada $n$, $n \geq n_0$  o algoritmo nunca tomará mais que $c * g(n)$ passos, $c$ constante, para concluir
+sua execução.
+
+\theoremstyle{definition}
+\begin{definition}
+        $\Omega(g(n)) := \{f(n)\ |\ 0 \leq c * g(n) \leq f(n), c\ constante\ e\ n \geq n_0\}$        
+\end{definition}
+
+A definição de $\Omega$ é similar a definição de $O$, com a diferença que $\Omega$ descreve o comportamento do algoritmo
+em seu melhor caso. Isto é, independente da entrada $n$, $n \geq n_0$ o algoritmo tomará ao menos $c * g(n)$ passos, $c$ constante, para concluir
+sua execução.
+
+\theoremstyle{definition}
+\begin{definition}
+        $\Theta(g(n)) := \{f(n)\ | f(n) \in \Omega(g(n)) \wedge f(n) \in O(g(n))\}$        
+\end{definition}
+
+Por último, a definição de $\Theta$ descreve uma classe de algoritmos em que o melhor e o pior caso estão na mesma ordem
+de complexidade. É uma notação mais precisa em relação a complexidade do algoritmo mas que, efetivamente, não se aplica
+a qualquer análise.
+
+\subsection{Equações de Recorrência}
+
+\subsection{Teorema Mestre}
 
 \section{O algoritmo Merge Sort}
 \label{merge_sort}
@@ -148,7 +183,32 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
 \end{lemma}
 
 \begin{proof}
+        Induzindo sobre o tamanho da listas e utilizando da definição de merge, a afirmação do
+        lema deve ser verificado em três situações:
+        \begin{enumerate}
+                \item $\rho$ ou $\eta$ são listas nulas.
+                \item A cabeça de $\rho$ é menor ou igual que a cabeça de $\eta$.
+                \item A cabeça de $\rho$ é maior que a cabeça de $\eta$.
+        \end{enumerate}
 
+        No primeiro caso, ao menos uma das listas tem tamanho zero, o algoritmo retorna então a concanetação de uma
+        lista nula com outra lista $\psi$, que com certeza terá o mesmo tamanho que $\psi$. Para os outros dois casos
+        basta demonstrar que tamanho de $\rho$ mais tamanho de $\eta$ é igual à $1 + MERGE(cdr(\rho),\ \eta)$ ou
+        $1 + MERGE(\rho,\ cdr(\eta))$. 
+
+        A indução sobre o tamanho das listas neste lema nos garante que se a soma dos tamanhos de duas listas $\psi$ e $\gamma$ 
+        for estritamente menor que a soma dos tamanhos de $\rho$ e $\eta$, então o tamanho de $\psi$ mais tamanho de $\gamma$ é igual ao tamanho
+        de $MERGE(\psi, \gamma)$. Podemos utilizar o seguinte resultado para os pares de lista de entrada $(cdr(\rho),\ \eta)$ 
+        e para $(\rho, cdr(\eta))$ sem nenhum problema, uma vez que garantidamente nenhuma das listas é nula. Com isto, o problema
+        é reduzido a verificação de
+        \begin{equation*}
+                LENGTH(\rho) + LENGTH(\eta) = 1 + LENGTH(MERGE(cdr(\rho),\ \eta))
+        \end{equation*}
+        e,
+        \begin{equation*}
+                LENGTH(\rho) + LENGTH(\eta) = 1 + LENGTH(MERGE(\rho,\ cdr(\eta)))
+        \end{equation*}
+        que são ambas, trivialmente verdade.
 \end{proof}
 
 \begin{lemma}
@@ -156,7 +216,9 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
         Para quaisquer entradas $\rho$ e $\eta$, $MERGE(\rho,\ \eta)$ é uma permutação de concanetação de $\eta$ e $\rho$.
 \end{lemma}
 \begin{proof}
-        Tomando $\rho$ e $\eta$ quaisquer, 
+        Tomando $\rho$ e $\eta$ quaisquer, é sabído que a somas das ocorrências nas duas listas é igual às ocorrências
+        na concanetação das mesmas. Logo, basta demonstrar que a soma das ocorrências em $\rho$ e $\eta$ é igual às
+        ocorrências em $MERGE(\rho,\ \eta)$, o que efetivamente é o resultado verificado pelo lema \ref{merge-preserves-occurrences}, 
 \end{proof}
 
 \begin{lemma}
@@ -189,7 +251,14 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
 \end{lemma}
 
 \begin{proof}
-        
+        Induzindo sobre o tamanho da lista $\tau$ de entrada e valendo-se da definição de $MERGESORT$. Basta demonstrar
+        que nos dois caminhos de execução do algoritmo não há modicação no tamanho da lista de entrada. O primeiro caso
+        ocorre quando o tamanho da lista de entrada $\tau$ é menor ou igual à um, que é trivial, uma vez que a respota do algoritmo
+        é a própria lista $\tau$.
+
+        No caso da chamada recursiva, o lema ref{merge-preserves-length} nos garante que nenhuma chamada à $MERGE$ 
+        altera o tamanho da lista resultante e a própria parada de $MERGESORT$ conserva o tamanho da lista de entrada como visto
+        anteriormente. Dessa forma, $MERGESORT$ conserva o tamanho da lista de entrada na lista resultante. 
 \end{proof}
 
 \begin{lemma}
@@ -198,7 +267,16 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
 \end{lemma}
 
 \begin{proof}
+        A definição de permutação de uma lista nos diz que para qualquer chave $k$, o número de ocorrências
+        de $k$ em $\tau$ é o mesmo que em $PERMUTATION(\tau)$. Utilizando da definição de $MERGESORT$ e aplicando
+        indução sobre o tamanho da lista $\tau$ de entrada, obtemos dois casos em que faz necessário demonstrar que
+        a saída do algoritmo é uma permutação de $\tau$. O primeiro caso, trivial, diz respeito à listas com tamanhos menores
+        ou iguais à um, neste caso o algoritmo retorna a própria lista de entrada que por definição é uma permutação da mesma.
         
+        O segundo caso a ser demonstrado é para listas de tamanho maior do que um, entradas as quais o algoritmo realiza ao menos
+        uma chamada recursiva a sí próprio. O lema \ref{merge-is-permutation} nos garante que a chamada à função $MERGE$
+        efetivamente não altera o status de permutação de uma lista e o fato de o caso de parada da recursão de $MERGESORT$ também
+        não modificar esta configuração nos permite concluir que $MERGESORT(\tau)$ é uma permutação de $\tau$ para qualquer $\tau$.
 \end{proof}
 
 \begin{lemma}
@@ -225,8 +303,8 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
 \end{theorem}
 
 \begin{proof}
-        Aplicando os lemas \ref{mergesort-sorts} e \ref{mergesort-is-permutation}, as propriedades as quais
-        deseja-se demonstrar tornam-se evidentes. 
+        Aplicando os lemas \ref{mergesort-sorts} e \ref{mergesort-is-permutation}, a propriedade da corretude torna-se
+        evidente.
 \end{proof}
 
 \input{complexity.tex}
