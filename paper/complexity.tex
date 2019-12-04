@@ -94,3 +94,57 @@ Merge Sort com e sem contador:
   $COUNT-MERGESORT$, e o sequente é provado.
 \end{proof}
 
+O lema a seguir é um lema auxiliar, necessário para a prova do lema \ref{merge_sort_ws}.
+
+\begin{lemma}
+  \label{cmerge_sort_length}
+  $\forall$ $\rho$, lista de naturais, o tamanho da 
+  resultante de $COUNT-MERGESORT$ é igual ao tamanho de $\rho$.
+\end{lemma}
+
+\begin{proof}
+  Para tal, basta utilizar o lema \ref{cmergesort_equiv_mergesort} e o lema
+  \ref{mergesort-preserves-length}.
+\end{proof}
+
+Os lemas seguintes são acerca da complexidade do Merge Sort, utilizando
+os contadores de comparações. 
+
+\begin{lemma}
+  \label{count_cmerge_ws}
+  $\forall \rho, \eta$, listas de naturais, o valor do contador 
+  de comparações retornado pela chamada $COUNT-MERGE(\rho,\ \eta,\ 0)$ é 
+  menor ou igual que \textbf{\textit{n + m}}, onde \textbf{\textit{n}}
+  é o tamanho de $\rho$ e \textbf{\textit{m}} é o tamanho de $\eta$
+\end{lemma}
+
+\begin{proof}
+  
+\end{proof}
+
+\begin{lemma}
+  \label{cmerge_general_case}
+  $\forall \rho, \eta$, listas de naturais, e $\sigma$, um natural,
+  o valor do contador de comparações retornado pela chamada 
+  $COUNT-MERGE(\rho,\ \eta,\ \sigma)$ é menor ou igual que 
+  \textbf{\textit{n + m + c}}, onde \textbf{\textit{n}} é o 
+  tamanho de $\rho$, \textbf{\textit{m}} é o tamanho de $\eta$ e
+  \textbf{\textit{c}} é o número de comparações realizadas anteriormente, 
+  ou seja, $\sigma$.
+\end{lemma}
+
+\begin{proof}
+  
+\end{proof}
+
+\begin{lemma}
+  \label{merge_sort_ws}
+  $\forall \rho$, lista de naturais, tal que tamanho de $\rho$ é maior
+  que zero, o valor do contador de comparações retornado pela chamada 
+  $COUNT-MERGESORT(\rho)$ é menor ou igual a \textbf{n + n log n}, onde
+  \textbf{n} é o tamanho de $\rho$.
+\end{lemma}
+
+\begin{proof}
+  
+\end{proof}
