@@ -1,21 +1,16 @@
 (mergesort_complexity
  (cmerge_equiv_merge 0
   (cmerge_equiv_merge-1 nil 3782153499
-   ("" (induct l1)
-    (("1" (skeep)
-      (("1" (expand "merge")
-        (("1" (expand "cmerge") (("1" (propax) nil nil)) nil)) nil))
-      nil)
-     ("2" (skeep)
-      (("2" (induct l2)
-        (("1" (expand "cmerge")
-          (("1" (expand "merge") (("1" (propax) nil nil)) nil)) nil)
-         ("2" (skeep)
-          (("2" (expand "merge" 1)
-            (("2" (expand "cmerge" 1)
-              (("2" (lift-if)
-                (("2" (prop)
-                  (("1" (grind) nil nil) ("2" (grind) nil nil)) nil))
+   ("" (measure-induct "length(l1)+length(l2)" (l1 l2))
+    (("" (skeep)
+      (("" (skeep)
+        (("" (expand merge 1)
+          (("" (expand cmerge 1)
+            (("" (lift-if)
+              (("" (prop)
+                (("1" (inst -2 "cdr(x_1)" "x_2")
+                  (("1" (grind) nil nil)) nil)
+                 ("2" (grind) nil nil))
                 nil))
               nil))
             nil))
@@ -23,31 +18,49 @@
         nil))
       nil))
     nil)
-   ((real_le_is_total_order name-judgement "(total_order?[real])"
+   ((cons? adt-recognizer-decl "[list -> boolean]" list_adt nil)
+    (cdr adt-accessor-decl "[(cons?) -> list]" list_adt nil)
+    (posint_plus_nnint_is_posint application-judgement "posint"
+     integers nil)
+    (nnint_plus_posint_is_posint application-judgement "posint"
+     integers nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (cons adt-constructor-decl "[[T, list] -> (cons?)]" list_adt nil)
-    (cons? adt-recognizer-decl "[list -> boolean]" list_adt nil)
-    (list_induction formula-decl nil list_adt nil)
-    (number nonempty-type-decl nil numbers nil)
-    (boolean nonempty-type-decl nil booleans nil)
+    (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (merge def-decl "list[nat]" mergesort nil)
+    (cmerge def-decl "[list[nat], nat]" cmergesort nil)
+    (wf_nat formula-decl nil naturalnumbers nil)
+    (< const-decl "bool" reals nil)
+    (length def-decl "nat" list_props nil)
+    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (naturalnumber type-eq-decl nil naturalnumbers nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (>= const-decl "bool" reals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (>= const-decl "bool" reals nil)
-    (nat nonempty-type-eq-decl nil naturalnumbers nil)
-    (cmerge def-decl "[list[nat], nat]" cmergesort nil)
-    (merge def-decl "list[nat]" mergesort nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
     (PRED type-eq-decl nil defined_types nil)
-    (list type-decl nil list_adt nil))
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (list type-decl nil list_adt nil)
+    (number nonempty-type-decl nil numbers nil)
+    (measure_induction formula-decl nil measure_induction nil)
+    (nnint_plus_nnint_is_nnint application-judgement "nonneg_int"
+     integers nil)
+    (well_founded? const-decl "bool" orders nil)
+    (pred type-eq-decl nil defined_types nil))
    shostak))
  (count_cmerge_ws 0
   (count_cmerge_ws-1 nil 3782514218
@@ -94,7 +107,7 @@
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (cmerge def-decl "[list[nat], nat]" cmergesort nil)
     (<= const-decl "bool" reals nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (PRED type-eq-decl nil defined_types nil)
     (list type-decl nil list_adt nil)
     (nnint_plus_nnint_is_nnint application-judgement "nonneg_int"
@@ -178,47 +191,234 @@
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (cmerge def-decl "[list[nat], nat]" cmergesort nil)
     (<= const-decl "bool" reals nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (PRED type-eq-decl nil defined_types nil)
     (list type-decl nil list_adt nil)
     (nnint_plus_nnint_is_nnint application-judgement "nonneg_int"
      integers nil))
+   shostak))
+ (cmerge_sort_equiv_merge_sort 0
+  (cmerge_sort_equiv_merge_sort-1 nil 3783262337
+   ("" (measure-induct "length(l)" l)
+    (("" (skeep)
+      (("" (expand cmerge_sort 1)
+        (("" (expand merge_sort 1)
+          (("" (lift-if)
+            (("" (prop)
+              (("" (copy -1)
+                (("" (inst -1 "prefix(x, floor(length(x) / 2))")
+                  (("" (inst -2 "suffix(x, floor(length(x) / 2))")
+                    (("" (use "length_suffix")
+                      (("" (use "length_prefix")
+                        (("" (replaces)
+                          (("" (prop)
+                            (("1" (replaces)
+                              (("1"
+                                (use cmerge_equiv_merge)
+                                (("1"
+                                  (use cmerge_equiv_merge)
+                                  (("1" (grind) nil nil))
+                                  nil))
+                                nil))
+                              nil)
+                             ("2" (grind) nil nil)
+                             ("3" (grind) nil nil)
+                             ("4" (grind) nil nil))
+                            nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((nonneg_floor_is_nat application-judgement "nat" floor_ceil nil)
+    (nnrat_div_posrat_is_nnrat application-judgement "nonneg_rat"
+     rationals nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (below type-eq-decl nil nat_types nil)
+    (finseq type-eq-decl nil finite_sequences nil)
+    (list2finseq const-decl "finseq[T]" list2finseq nil)
+    (prefix def-decl "list[nat]" sorting nil)
+    (integer nonempty-type-from-decl nil integers nil)
+    (<= const-decl "bool" reals nil)
+    (floor const-decl "{i | i <= x & x < i + 1}" floor_ceil nil)
+    (/= const-decl "boolean" notequal nil)
+    (nznum nonempty-type-eq-decl nil number_fields nil)
+    (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
+    (length_suffix formula-decl nil sorting nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (nnint_plus_posint_is_posint application-judgement "posint"
+     integers nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (posint_plus_nnint_is_posint application-judgement "posint"
+     integers nil)
+    (nnint_plus_nnint_is_nnint application-judgement "nonneg_int"
+     integers nil)
+    (cmerge_equiv_merge formula-decl nil mergesort_complexity nil)
+    (length_prefix formula-decl nil sorting nil)
+    (suffix def-decl "list[nat]" sorting nil)
+    (merge_sort def-decl "list[nat]" mergesort nil)
+    (cmerge_sort def-decl "[list[nat], nat]" cmergesort nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (wf_nat formula-decl nil naturalnumbers nil)
+    (< const-decl "bool" reals nil)
+    (length def-decl "nat" list_props nil)
+    (naturalnumber type-eq-decl nil naturalnumbers nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (>= const-decl "bool" reals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (PRED type-eq-decl nil defined_types nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (list type-decl nil list_adt nil)
+    (number nonempty-type-decl nil numbers nil)
+    (measure_induction formula-decl nil measure_induction nil)
+    (well_founded? const-decl "bool" orders nil)
+    (pred type-eq-decl nil defined_types nil))
+   shostak))
+ (cmerge_sort_length 0
+  (cmerge_sort_length-1 nil 3784220169
+   ("" (use cmerge_sort_equiv_merge_sort)
+    (("" (skeep)
+      (("" (inst -1 l)
+        (("" (replaces)
+          (("" (lemma mergesort_preserves_len)
+            (("" (inst -1 l) (("" (assert) nil nil)) nil)) nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((mergesort_preserves_len formula-decl nil merge_sort_correctness
+     nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (>= const-decl "bool" reals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (PRED type-eq-decl nil defined_types nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (list type-decl nil list_adt nil)
+    (number nonempty-type-decl nil numbers nil)
+    (cmerge_sort_equiv_merge_sort formula-decl nil mergesort_complexity
+     nil))
    shostak))
  (merge_sort_ws_TCC1 0
   (merge_sort_ws_TCC1-1 nil 3782076201 ("" (subtype-tcc) nil nil) nil
    nil))
  (merge_sort_ws 0
   (merge_sort_ws-1 nil 3782076205
-   ("" (induct l)
-    (("1" (assert) nil nil)
-     ("2" (expand "length") (("2" (propax) nil nil)) nil)
-     ("3" (skeep)
-      (("3" (expand "cmerge_sort" 1)
-        (("3" (lift-if)
-          (("3" (prop)
-            (("1" (grind) nil nil)
-             ("2" (lemma "cmerge_general_case")
-              (("2"
-                (inst -1 "cmerge_sort(prefix(cons(cons1_var, cons2_var),
-                                floor(length(cons(cons1_var, cons2_var))
-                                      /
-                                      2)))`1"
-                 "cmerge_sort(suffix(cons(cons1_var, cons2_var),
-                                floor(length(cons(cons1_var, cons2_var))
-                                      /
-                                      2)))`1"
-                 " cmerge_sort(prefix(cons(cons1_var, cons2_var),
-                                floor(length(cons(cons1_var, cons2_var))
-                                      /
-                                      2)))`2
-              +
-              cmerge_sort(suffix(cons(cons1_var, cons2_var),
-                                 floor(length(cons(cons1_var, cons2_var))
-                                       /
-                                       2)))`2")
-                (("2" (assert) (("2" (postpone) nil nil)) nil)) nil))
+   ("" (measure-induct "length(l)" l)
+    (("" (skeep)
+      (("" (expand cmerge_sort 1)
+        (("" (lift-if)
+          (("" (use cmerge_general_case)
+            (("1" (prop)
+              (("1" (grind) nil nil)
+               ("2" (use length_prefix)
+                (("2" (use length_suffix)
+                  (("2" (lemma cmerge_sort_length)
+                    (("2" (lemma cmerge_sort_length)
+                      (("2" (inst -1 "prefix(x, floor(length(x)/2))")
+                        (("2" (inst -2 "suffix(x, floor(length(x)/2))")
+                          (("2" (replace -1 -5)
+                            (("2" (replace -2 -5)
+                              (("2"
+                                (replace -3 -5)
+                                (("2"
+                                  (replace -4 -5)
+                                  (("2"
+                                    (assert)
+                                    (("2"
+                                      (lemma le_cut)
+                                      (("2"
+                                        (inst
+                                         -1
+                                         "cmerge(cmerge_sort(prefix(x, floor(length(x) / 2)))`1,
+             cmerge_sort(suffix(x, floor(length(x) / 2)))`1,
+             cmerge_sort(prefix(x, floor(length(x) / 2)))`2 +
+              cmerge_sort(suffix(x, floor(length(x) / 2)))`2)`2"
+                                         "length(x) + cmerge_sort(prefix(x, floor(length(x) / 2)))`2 +
+        cmerge_sort(suffix(x, floor(length(x) / 2)))`2"
+                                         "length(x) + length(x) * log(2)(length(x))")
+                                        (("2"
+                                          (split)
+                                          (("1" (propax) nil nil)
+                                           ("2" (propax) nil nil)
+                                           ("3"
+                                            (hide -5 3 2)
+                                            (("3"
+                                              (copy -5)
+                                              (("3"
+                                                (inst
+                                                 -1
+                                                 "prefix(x, floor(length(x)/2))")
+                                                (("3"
+                                                  (inst
+                                                   -6
+                                                   "suffix(x, floor(length(x)/2))")
+                                                  (("3"
+                                                    (replace -4 -6)
+                                                    (("3"
+                                                      (replace -5 -1)
+                                                      (("3"
+                                                        (assert)
+                                                        (("3"
+                                                          (replaces)
+                                                          (("3"
+                                                            (postpone)
+                                                            nil
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
               nil)
-             ("3" (grind) nil nil) ("4" (grind) nil nil))
+             ("2" (grind) nil nil))
             nil))
           nil))
         nil))
@@ -239,24 +439,25 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (>= const-decl "bool" reals nil)
+    (> const-decl "bool" reals nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
     (integer_pred const-decl "[rational -> boolean]" integers nil)
     (int nonempty-type-eq-decl nil integers nil)
+    (>= const-decl "bool" reals nil)
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
     (log_gt1 const-decl "[{r | r >= 1} -> nnreal]" nn_log "power/")
     (inverse const-decl "D" function_inverse nil)
-    (nn_log const-decl "nnreal" nn_log "power/") nil
+    (nn_log const-decl "nnreal" nn_log "power/")
     (nnreal_plus_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -274,22 +475,23 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
     (real nonempty-type-from-decl nil reals nil)
-    (>= const-decl "bool" reals nil)
+    (> const-decl "bool" reals nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
     (rational nonempty-type-from-decl nil rationals nil)
     (integer_pred const-decl "[rational -> boolean]" integers nil)
     (int nonempty-type-eq-decl nil integers nil)
+    (>= const-decl "bool" reals nil)
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (log_gt1 const-decl "[{r | r >= 1} -> nnreal]" nn_log "power/")
     (inverse const-decl "D" function_inverse nil)
-    (nn_log const-decl "nnreal" nn_log "power/") nil
+    (nn_log const-decl "nnreal" nn_log "power/")
     (nnreal_times_nnreal_is_nnreal application-judgement "nnreal"
      real_types nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_times_real_is_real application-judgement "real" reals nil)
-    (real_gt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"

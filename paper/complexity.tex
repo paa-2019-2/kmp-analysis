@@ -1,0 +1,150 @@
+\section{Análise de complexidade do Merge Sort}
+\label{complexity}
+A complexidade de um algoritmo de ordenação se baseia em contar 
+o número de comparações realizadas durante sua execução. 
+Neste sentido, existe uma classificação de algoritmos de ordenação chamada
+algoritmos de ordenação por comparação, que, segundo Cormen \cite{cormen2012algoritmos},
+são algoritmos baseados em comparações entre dois elementos e 
+efetuam pelo menos \textbf{\textit{$\Omega$(n lg n)}} comparações
+no pior caso. 
+
+O Merge Sort é um algoritmo de ordenação por comparação, e portanto,
+sua análise de complexidade se baseia em contar quantas comparações
+são efetuadas para ordenar uma lista de tamanho \textit{\textbf{n}}. Para
+tanto, foram necessárias modificações no algoritmo, de forma a incluir
+um contador de comparações. O pseudo-código abaixo representa a ideia 
+da inclusão de um contador no Merge Sort:
+$\newline$
+\begin{algorithm}[H]
+  \KwData{$\rho, \eta : Sorted\ lists,\ \sigma : natural $}
+  \KwResult{$Sorted\ merge\ of\ \rho\ and\ \eta,\ number\ of\ comparisons$}
+  \eIf{$\rho = Nil$ or $\eta = Nil$}{
+      $\textbf{return}\  \rho + \eta,\ \sigma$ 
+  }{
+      \eIf{$car(\rho) \leq car(\eta)$}{
+          $\textbf{return}\ car(\rho) + MERGE(cdr(\rho) ,\ \eta,\ \sigma + 1)$
+      }{
+          $\textbf{return}\ car(\eta) + MERGE(\rho,\ cdr(\eta),\ \sigma + 1)$
+      }
+  }
+  \caption{COUNT-MERGE}
+\end{algorithm}
+$\newline$
+$\newline$
+\begin{algorithm}[H]
+  \KwData{$\tau : List\ of\ comparable\ elements$}
+  \KwResult{$Sorted\ permutation\ of\ \tau,\ number\ of\ comparisons $}
+  \eIf{$length(\tau) \leq 1$}{
+          $\textbf{return}\ \tau, \ 0 $
+  }{
+          $prefix,\ \sigma \leftarrow\ MERGESORT(first\_half(\tau))$\;
+          $suffix,\ \iota \leftarrow\ MERGESORT(second\_half(\tau))$\;
+          $\textbf{return}\ MERGE(prefix,\ suffix,\ \sigma + \iota)$\;  
+  }
+  \caption{COUNT-MERGESORT}
+\end{algorithm}
+$\newline$
+$\newline$
+A adição de um contador no Merge Sort permite a análise de comparações, porém,
+não é possível assegurar que o contador não inseriu um erro no algoritmo. Portanto,
+é necessário provar os seguintes lemas, que asseguram a equivalência entre o 
+Merge Sort com e sem contador:
+
+\begin{lemma}
+    \label{cmerge_equiv_merge}
+    $\forall$ $\rho$, $\eta$ listas de naturais, a resultante de $MERGE(\rho,\ \eta)$
+    é igual à resultante de $COUNT-MERGE(\rho,\ \eta, \sigma)$, a não ser por $\sigma$.
+\end{lemma}
+
+\begin{proof}
+  A ideia da prova é mostrar que a lista retornada por $MERGE$ é 
+  igual à lista retornada por $COUNT-MERGE$. Utilizando indução 
+  forte sobre a soma tamanho das listas $\rho$ e $\eta$, 
+  temos que para quaisquer listas cujo a soma dos tamanhos das mesmas
+  é menor que a soma do tamanho das listas, a propriedade vale. Portanto
+  basta expandir a definição de $MERGE$ e $COUNT-MERGE$ e analisar
+  os seguintes casos, no momento da chamada recursiva:
+    \begin{enumerate}
+      \item cabeça de $\rho$ é maior ou igual que a cabeça de $\eta$
+      \item a cabeça de $\rho$ é menor que a cabeça de $\eta$
+    \end{enumerate}
+  Em ambos, temos uma construção de uma lista no qual podemos ver que a 
+  propriedade da indução pode ser aplicada, pois temos que tamanho da 
+  cauda de $\rho$ + tamanho de $\eta$ é menor que tamanho de $\rho$ + tamanho
+  de $\eta$, e precisamos mostrar que inserir a cabeça de $\rho$ na lista 
+  construída resulta na mesma lista para as duas funções. De fato, ao aplicar
+  a hipótese de indução, temos que inserir o mesmo elemento em duas listas iguais
+  resulta em duas listas iguais, o que é trivialmente verdade.
+\end{proof}
+
+\begin{lemma}
+  \label{cmergesort_equiv_mergesort}
+  $\forall$ $\rho$, lista de naturais, a resultante de $MERGESORT(\rho)$
+  é igual à resultante de $COUNT-MERGESORT(\rho)$, a não ser pelo contador retornado.
+\end{lemma}
+
+\begin{proof}
+  De forma semelhante ao lema anterior, a ideia da prova é mostrar que o retorno
+  de $MERGESORT$ e $COUNT-MERGESORT$ são equivalentes. Com indução forte, temos
+  temos que para quaisquer listas cujo a soma dos tamanhos das mesmas é
+  menor que a soma do tamanho das listas, a propriedade vale. Com isso, aplicamos
+  a hipótese de indução para \textbf{\textit{prefix}} e \textbf{\textit{suffix}} e 
+  expandimos as definições de $MERGESORT$ e $COUNT-MERGESORT$. Basta aplicar
+  o lema anterior para $MERGE$ e $COUNT-MERGE$ na expansão de $MERGESORT$ e 
+  $COUNT-MERGESORT$, e o sequente é provado.
+\end{proof}
+
+O lema a seguir é um lema auxiliar, necessário para a prova do lema \ref{merge_sort_ws}.
+
+\begin{lemma}
+  \label{cmerge_sort_length}
+  $\forall$ $\rho$, lista de naturais, o tamanho da 
+  resultante de $COUNT-MERGESORT$ é igual ao tamanho de $\rho$.
+\end{lemma}
+
+\begin{proof}
+  Para tal, basta utilizar o lema \ref{cmergesort_equiv_mergesort} e o lema
+  \ref{mergesort-preserves-length}.
+\end{proof}
+
+Os lemas seguintes são acerca da complexidade do Merge Sort, utilizando
+os contadores de comparações. 
+
+\begin{lemma}
+  \label{count_cmerge_ws}
+  $\forall \rho, \eta$, listas de naturais, o valor do contador 
+  de comparações retornado pela chamada $COUNT-MERGE(\rho,\ \eta,\ 0)$ é 
+  menor ou igual que \textbf{\textit{n + m}}, onde \textbf{\textit{n}}
+  é o tamanho de $\rho$ e \textbf{\textit{m}} é o tamanho de $\eta$
+\end{lemma}
+
+\begin{proof}
+  
+\end{proof}
+
+\begin{lemma}
+  \label{cmerge_general_case}
+  $\forall \rho, \eta$, listas de naturais, e $\sigma$, um natural,
+  o valor do contador de comparações retornado pela chamada 
+  $COUNT-MERGE(\rho,\ \eta,\ \sigma)$ é menor ou igual que 
+  \textbf{\textit{n + m + c}}, onde \textbf{\textit{n}} é o 
+  tamanho de $\rho$, \textbf{\textit{m}} é o tamanho de $\eta$ e
+  \textbf{\textit{c}} é o número de comparações realizadas anteriormente, 
+  ou seja, $\sigma$.
+\end{lemma}
+
+\begin{proof}
+  
+\end{proof}
+
+\begin{lemma}
+  \label{merge_sort_ws}
+  $\forall \rho$, lista de naturais, tal que tamanho de $\rho$ é maior
+  que zero, o valor do contador de comparações retornado pela chamada 
+  $COUNT-MERGESORT(\rho)$ é menor ou igual a \textbf{n + n log n}, onde
+  \textbf{n} é o tamanho de $\rho$.
+\end{lemma}
+
+\begin{proof}
+  
+\end{proof}
