@@ -2,44 +2,57 @@
  (merge_preserves_occurrences 0
   (merge_preserves_occurrences-1 nil 3781005711
    ("" (skolem 1 ("_" "_" "n"))
-    (("" (measure-induct "length(l1) + length(l2)" (l1 l2))
+    (("" (measure-induct "length(l1)+length(l2)" (l1 l2))
       (("" (skeep)
-        (("" (case "x_1 = null")
-          (("1" (expand "merge" 1)
-            (("1" (assert)
-              (("1" (expand "append" 1)
-                (("1" (expand "occurrences" 1) (("1" (propax) nil nil))
-                  nil))
-                nil))
-              nil))
-            nil)
-           ("2" (expand "merge" 2)
-            (("2" (case "x_2 = null")
-              (("1" (assert)
-                (("1" (replace -1 2)
-                  (("1" (rewrite "append_null")
-                    (("1" (expand "occurrences" 2 2)
+        (("" (expand merge 1)
+          (("" (lift-if)
+            (("" (prop)
+              (("1" (case "x_1 = null")
+                (("1" (replaces)
+                  (("1" (expand append)
+                    (("1" (expand occurrences) (("1" (propax) nil nil))
+                      nil))
+                    nil))
+                  nil)
+                 ("2" (assert) nil nil))
+                nil)
+               ("2" (case "x_2 = null")
+                (("1" (replaces)
+                  (("1" (rewrite append_null)
+                    (("1" (expand occurrences 1 2)
                       (("1" (propax) nil nil)) nil))
                     nil))
-                  nil))
+                  nil)
+                 ("2" (assert) nil nil))
                 nil)
-               ("2" (assert)
-                (("2" (lift-if)
-                  (("2" (prop)
-                    (("1" (expand "occurrences" 1 (1 2))
+               ("3" (inst -2 "cdr(x_1)" "x_2")
+                (("3" (prop)
+                  (("1" (replaces)
+                    (("1" (expand occurrences 1 3)
                       (("1" (lift-if)
-                        (("1" (assert) (("1" (grind) nil nil)) nil))
-                        nil))
-                      nil)
-                     ("2" (expand "occurrences" 2 (1 3))
-                      (("2" (lift-if)
-                        (("2" (assert)
-                          (("2" (inst -1 "x_1" "cdr(x_2)")
-                            (("2" (grind) nil nil)) nil))
+                        (("1" (prop)
+                          (("1" (replaces -2 1 rl)
+                            (("1" (grind) nil nil)) nil)
+                           ("2" (grind) nil nil))
                           nil))
                         nil))
                       nil))
-                    nil))
+                    nil)
+                   ("2" (grind) nil nil))
+                  nil))
+                nil)
+               ("4" (inst -1 "x_1" "cdr(x_2)")
+                (("4" (prop)
+                  (("1" (replaces)
+                    (("1" (expand occurrences 2 3)
+                      (("1" (lift-if)
+                        (("1" (prop)
+                          (("1" (grind) nil nil) ("2" (grind) nil nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil)
+                   ("2" (grind) nil nil))
                   nil))
                 nil))
               nil))
@@ -81,21 +94,20 @@
     (occurrences def-decl "nat" sorting nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (null? adt-recognizer-decl "[list -> boolean]" list_adt nil)
-    (null adt-constructor-decl "(null?)" list_adt nil)
     (append def-decl "list[T]" list_props nil)
+    (null adt-constructor-decl "(null?)" list_adt nil)
+    (null? adt-recognizer-decl "[list -> boolean]" list_adt nil)
     (append_null formula-decl nil list_props nil)
-    (nnint_plus_posint_is_posint application-judgement "posint"
-     integers nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
-    (int_minus_int_is_int application-judgement "int" integers nil)
+    (nnint_plus_posint_is_posint application-judgement "posint"
+     integers nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (cons? adt-recognizer-decl "[list -> boolean]" list_adt nil)
     (cdr adt-accessor-decl "[(cons?) -> list]" list_adt nil)
-    (real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil))
+    (cons? adt-recognizer-decl "[list -> boolean]" list_adt nil))
    shostak))
  (append_null_2 0
   (append_null_2-1 nil 3781275183
@@ -124,8 +136,7 @@
     (null? adt-recognizer-decl "[list -> boolean]" list_adt nil)
     (append def-decl "list[T]" list_props nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (every adt-def-decl "boolean" list_adt nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
     (PRED type-eq-decl nil defined_types nil)
     (list type-decl nil list_adt nil))
    shostak))
@@ -244,8 +255,7 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (every adt-def-decl "boolean" list_adt nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -290,8 +300,7 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (every adt-def-decl "boolean" list_adt nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -446,10 +455,7 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    (x_2 skolem-const-decl "list[nat]" merge_sort_correctness nil)
-    (k skolem-const-decl
-     "below[list2finseq(cons(car(x_1), merge(cdr(x_1), x_2)))`length]"
-     merge_sort_correctness nil)
+    nil nil
     (int_plus_int_is_int application-judgement "int" integers nil)
     (cdr_of_sorted_is_sorted formula-decl nil sorting nil)
     (nth def-decl "T" list_props nil)
@@ -458,7 +464,7 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (x_1 skolem-const-decl "list[nat]" merge_sort_correctness nil)
+    nil
     (odd_plus_even_is_odd application-judgement "odd_int" integers nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
@@ -470,10 +476,7 @@
     (cons? adt-recognizer-decl "[list -> boolean]" list_adt nil)
     (list2finseq const-decl "finseq[T]" list2finseq nil)
     (finseq type-eq-decl nil finite_sequences nil)
-    (below type-eq-decl nil nat_types nil)
-    (k skolem-const-decl
-     "below[list2finseq(cons(car(x_2), merge(x_1, cdr(x_2))))`length]"
-     merge_sort_correctness nil)
+    (below type-eq-decl nil nat_types nil) nil
     (append def-decl "list[T]" list_props nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
@@ -496,8 +499,7 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (every adt-def-decl "boolean" list_adt nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -591,8 +593,7 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (every adt-def-decl "boolean" list_adt nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -731,8 +732,7 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (every adt-def-decl "boolean" list_adt nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -832,8 +832,7 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (every adt-def-decl "boolean" list_adt nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -862,8 +861,7 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (every adt-def-decl "boolean" list_adt nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
