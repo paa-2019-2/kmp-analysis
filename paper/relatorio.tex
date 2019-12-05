@@ -45,8 +45,8 @@ o utilize para demonstrar que de fato aquela construção vale.
 
 Um dos verificadores, PVS - Prototype Verification System - é a linguagem de especificação e provador automatizado de teoremas que aqui será utilizado.
 PVS trabalha com implementações em distribuições de diferentes versões de LISP. Em um arquivo, o usuário define premissas - um algoritmo - e teoremas.
-O arquivo é dado como entrada para o provador que requisita as regras a serem aplicadas até que o teorema desejado seja provado. As regras reconhecidas pelo
-PVS tratam-se regras do cálculo de sequentes. O PVS permite também que uma prova possa ser revisitada em uma representação gráfica que
+O arquivo é dado como entrada para o provador que requisita as regras a serem aplicadas até que o teorema desejado seja provado. O conjunto de regras reconhecidas pelo
+PVS trata-se do cálculo de sequentes. O PVS permite também que uma prova possa ser revisitada em uma representação gráfica que
 revela cada passo bem como suas dependências.
 
 O objetivo deste trabalho é analisar assintóticamente o custo de tempo e a corretude do algoritmo de ordenação \textit{Merge Sort} via PVS. O Merge Sort foi criado
@@ -54,10 +54,11 @@ em meados de 1945 por John Von Neumann. A escolha deste algoritmo se deu por ser
 vetores e listas ligadas e por, ainda sim, ser um algoritmo com múltiplas aplicações dado o seu custo de execução. Este relatório apresentará a ideia de prova
 formalizada via provador e fica a critério do leitor visitar o repositório para verificar a mesma. A formalização completa pode ser encontrada em \url{github.com/paa-2019-2/levi-nunes}.
 
-Esse documento se organizará, daqui em diante, por um capítulo \ref{explaining} de revisão teórica. Em seguida, no capitulo \ref{merge_sort}, a apresentação do algoritmo Merge Sort. 
+Esse documento se organizará, daqui em diante, por um capítulo \ref{explaining} de revisão teórica. Em seguida, no capitulo \ref{merge_sort}, a apresentação do algoritmo Merge Sort.
+O capitulo \ref{correctness} apresentará, como o capitulo anterior, a ideia abordada
+e sua argumentação. 
 O capitulo \ref{complexity} apresentará a ideia abordada pelos autores para a análise de assintótica do algoritmo
-bem como argumentação sobre o pior e o melhor caso do mesmo. O capitulo \ref{correctness} apresentará, como o capitulo anterior, a ideia abordada
-e sua argumentação. Por fim, o capitulo de conclusão, apresentará um resumo dos resultados aqui encontrados acompanhado de um meta-texto discorrendo sobre
+bem como argumentação sobre o pior caso do mesmo. Por fim, o capitulo de conclusão, apresentará um resumo dos resultados aqui encontrados acompanhado de um meta-texto discorrendo sobre
 as principais dificuldades do trabalho com o verificador formal de provas.
 
 \section{Revisão teórica}
@@ -303,7 +304,7 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
 \end{theorem}
 
 \begin{proof}
-        Aplicando os lemas \ref{mergesort-sorts} e \ref{mergesort-is-permutation}, a propriedade da corretude torna-se
+        Aplicando os lemas \ref{mergesort-is-permutation} e \ref{mergesort-sorts}, a propriedade da corretude torna-se
         evidente.
 \end{proof}
 
