@@ -108,7 +108,9 @@ O lema a seguir é um lema auxiliar, necessário para a prova do lema \ref{merge
 \end{proof}
 
 Os lemas seguintes são acerca da complexidade do Merge Sort, utilizando
-os contadores de comparações. 
+os contadores de comparações. Os lemas \ref{count_cmerge_ws} e \ref{cmerge_general_case}
+são acerca da complexidade da rotina $MERGE$. Já o lema \ref{merge_sort_ws} 
+busca mostrar a complexidade de $MERGESORT$ por completo.
 
 \begin{lemma}
   \label{count_cmerge_ws}
@@ -119,7 +121,35 @@ os contadores de comparações.
 \end{lemma}
 
 \begin{proof}
-  
+  Primeiramente, utilizamos indução forte no tamanho das listas
+  $\rho$ e $\eta$, e temos, como hipótese de indução,
+  que a propriedade do lema vale para quaisquer listas tal 
+  que a soma dos tamanhos dessas listas é menor que a soma 
+  dos tamanhos de $\rho$ e $\eta$. Então, basta expandir $COUNT-MERGE$
+  e analisar cada um dos casos:
+  \begin{enumerate}
+    \item Temos que provar que a soma dos tamanhos de 
+      $\rho$ e $\eta$ é maior ou igual que 0, dado que $\rho$ é nulo
+      ou $\eta$ é nulo.
+
+    \item Temos que provar que 1 + $\sigma$ é menor ou igual a 
+      tamanho de $\rho$ + tamanho de $\eta$, onde $\sigma$ é o contador
+      retornado pela chamada $COUNT-MERGE(cdr(\rho),\ \eta,\ 0)$.
+
+    \item Temos que provar que 1 + $\sigma$ é menor ou igual a 
+      tamanho de $\rho$ + tamanho de $\eta$, onde $\sigma$ é o contador
+      retornado pela chamada $COUNT-MERGE(\rho,\ cdr(\eta),\ 0)$.
+  \end{enumerate}
+
+  Para o item 1, basta verificar que o tamanho não pode ser negativo,
+  então é sempre maior ou igual a zero.
+
+  Para o item 2, utilizamos a hipótese de indução para tamanho de $cdr(\rho)$ +
+  tamanho de $\eta$ e expandimos a definição de tamanho de listas não-nulas
+  para verificar que a propriedade é verificada.
+
+  Para o item 3, basta utilizar a mesma ideia da prova do item 2, com
+  a hipótese de indução sendo utilizada para $cdr(\eta)$.
 \end{proof}
 
 \begin{lemma}
@@ -134,7 +164,35 @@ os contadores de comparações.
 \end{lemma}
 
 \begin{proof}
-  
+  Por ser uma generalização do lema anterior, a prova desse lema se
+  dá de forma bem semelhante. Começamos utilizando indução forte em 
+  $LENGTH(\rho)$ + $LENGTH(\eta)$ e temos como hipótese que a propriedade
+  vale para quaisquer listas tal que a soma dos tamanhos 
+  dessas listas é menor que a soma dos tamanhos de $\rho$ e $\eta$.
+  Ao expandir a definição de $COUNT-MERGE$ temos os casos:
+
+  \begin{enumerate}
+    \item $\sigma$ é menor ou igual a $LENGTH(\rho)$ + $LENGTH(\eta)$ 
+      + $\sigma$, onde $\sigma$ é o contador retornado pela
+      chamada $COUNT-MERGE(\rho,\ \eta,\ \sigma)$.
+     
+  \item 1 + $\sigma$ é menor ou igual a 
+    $LENGTH(\rho)$ + $LENGTH(\eta)$ + $\sigma$, onde $\sigma$ é o contador
+    retornado pela chamada $COUNT-MERGE(cdr(\rho),\ \eta,\ \sigma)$.
+
+  \item 1 + $\sigma$ é menor ou igual a $LENGTH(\rho)$ + 
+    $LENGTH(\eta)$ + $\sigma$, onde $\sigma$ é o contador
+    retornado pela chamada $COUNT-MERGE(\rho,\ cdr(\eta),\ \sigma)$.
+\end{enumerate}
+
+Para o item 1, assim como no lema anterior, temos que o tamanho de uma
+lista não pode ser negativo, portanto, o sequente é trivialmente verdade.
+
+Para o item 2, utilizamos a hipótese de indução para $cdr(\rho)$ e 
+expandirmos a definição de LENGTH, que mostra que o sequente é verdade.
+
+Para o item 3, basta utilizar a ideia da prova do item 2, porém utilizando
+a hipótese de indução para $cdr(\eta)$.
 \end{proof}
 
 \begin{lemma}
