@@ -106,8 +106,8 @@
      integers nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (cdr adt-accessor-decl "[(cons?) -> list]" list_adt nil)
-    (cons? adt-recognizer-decl "[list -> boolean]" list_adt nil))
+    (cons? adt-recognizer-decl "[list -> boolean]" list_adt nil)
+    (cdr adt-accessor-decl "[(cons?) -> list]" list_adt nil))
    shostak))
  (append_null_2 0
   (append_null_2-1 nil 3781275183
@@ -136,7 +136,8 @@
     (null? adt-recognizer-decl "[list -> boolean]" list_adt nil)
     (append def-decl "list[T]" list_props nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
     (PRED type-eq-decl nil defined_types nil)
     (list type-decl nil list_adt nil))
    shostak))
@@ -255,7 +256,8 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -300,7 +302,8 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -455,7 +458,10 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
-    nil nil
+    (x_2 skolem-const-decl "list[nat]" merge_sort_correctness nil)
+    (k skolem-const-decl
+     "below[list2finseq(cons(car(x_1), merge(cdr(x_1), x_2)))`length]"
+     merge_sort_correctness nil)
     (int_plus_int_is_int application-judgement "int" integers nil)
     (cdr_of_sorted_is_sorted formula-decl nil sorting nil)
     (nth def-decl "T" list_props nil)
@@ -464,7 +470,7 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    nil
+    (x_1 skolem-const-decl "list[nat]" merge_sort_correctness nil)
     (odd_plus_even_is_odd application-judgement "odd_int" integers nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
@@ -476,7 +482,10 @@
     (cons? adt-recognizer-decl "[list -> boolean]" list_adt nil)
     (list2finseq const-decl "finseq[T]" list2finseq nil)
     (finseq type-eq-decl nil finite_sequences nil)
-    (below type-eq-decl nil nat_types nil) nil
+    (below type-eq-decl nil nat_types nil)
+    (k skolem-const-decl
+     "below[list2finseq(cons(car(x_2), merge(x_1, cdr(x_2))))`length]"
+     merge_sort_correctness nil)
     (append def-decl "list[T]" list_props nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
@@ -499,7 +508,8 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -593,7 +603,8 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -732,7 +743,8 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -832,7 +844,8 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -861,7 +874,8 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (every adt-def-decl "boolean" list_adt nil)
     (PRED type-eq-decl nil defined_types nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (boolean nonempty-type-decl nil booleans nil)
