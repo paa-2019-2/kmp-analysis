@@ -4,10 +4,12 @@ BEGIN
 
 IMPORTING complexity, mergesort, cmergesort, power@log, sorting, merge_sort_correctness
 
-length_pot_2: AXIOM
+p : nat
+
+floor_aux: AXIOM
     FORALL (l : list[nat]):
-        EXISTS (k : nat):
-	    length(l) = 2^k
+        floor(length(l)/2) = length(l)/2
+
 
 cmerge_equiv_merge: LEMMA
     FORALL (l1, l2 : list[nat], c : nat):
@@ -26,7 +28,8 @@ cmerge_sort_length: LEMMA
     FORALL (l : list[nat]) : length(cmerge_sort(l)`1) = length(l)
 
 merge_sort_ws: LEMMA
-    FORALL (l : list[nat] | length(l) > 1) : cmerge_sort(l)`2 = length(l) + length(l)*log(2)(length(l))
+    FORALL (l : list[nat] | length(l) > 0) :
+        cmerge_sort(l)`2 <= length(l) + length(l)*log(2)(length(l))
 
 merge_sort_is_nlgn : LEMMA
     FORALL (n : nat | n > 0):
