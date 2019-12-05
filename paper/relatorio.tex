@@ -33,8 +33,8 @@ Análise Assintótica e Corretude do Algoritmo MergeSort Utilizando PVS}
 \noindent A verificação formal de algoritmo, no que tange ao seu comportamento assintótico e a corretude do algoritmo é interesse
 central da Ciência da Computação. Por vezes, a prova via argumentação, isto é, lápis e papel pode ser suficiente para que o escritor
 convença o leitor de que o algoritmo está correto. Contudo, esse modelo de prova se sustenta muita vezes em passos de pura intuição,
-assumições que ambas as partes enxergam como um axioma, e saltos lógicos que por mais naturais que pareçam escondem um conjunto não-trivial
-de conceitos. A ocorrência desses aspectos em uma formalização pode ocultar falhas que, de fato, provem a incorretude do algoritmo e desmonstre
+premissas que ambas as partes enxergam como um axioma, e saltos lógicos que por mais naturais que pareçam escondem um conjunto não-trivial
+de conceitos. A ocorrência desses aspectos em uma formalização pode ocultar falhas que, de fato, provem a não-corretude do algoritmo ou demonstre
 um comportamento assintótico pior do que o esperado.
 
 Como forma de minimizar o exposto anteriormente, introduz-se os sistemas de verificação de provas. Os verificadores garantem que os passos realizados
@@ -47,7 +47,7 @@ Um dos verificadores, PVS - Prototype Verification System - é a linguagem de es
 PVS trabalha com implementações em distribuições de diferentes versões de LISP. Em um arquivo, o usuário define premissas - um algoritmo - e teoremas.
 O arquivo é dado como entrada para o provador que requisita as regras a serem aplicadas até que o teorema desejado seja provado. As regras reconhecidas pelo
 PVS tratam-se regras do cálculo de sequentes. O PVS permite também que uma prova possa ser revisitada em uma representação gráfica que
-revela cada passo bem como suas depedências.
+revela cada passo bem como suas dependências.
 
 O objetivo deste trabalho é analisar assintóticamente o custo de tempo e a corretude do algoritmo de ordenação \textit{Merge Sort} via PVS. O Merge Sort foi criado
 em meados de 1945 por John Von Neumann. A escolha deste algoritmo se deu por ser de implementação muito simples para múltiplas estruturas de dados tais como
@@ -63,12 +63,12 @@ as principais dificuldades do trabalho com o verificador formal de provas.
 \section{Revisão teórica}
 \label{explaining}
 
-Este capitulo introduzirá conceitos necessários e notações necessárias para o entedimento das seções posteriores.
+Este capitulo introduzirá conceitos necessários e notações necessárias para o entendimento das seções posteriores.
 
 \subsection{Notação assintótica}
 
 A notação assintótica é uma forma de descrever o comportamento de uma função matemática para um $n$ inteiros suficientemente
-grandes. Neste trabalho, interessa-se somente funções eventualmente crescentes uma vez que a intenção é analisar custo de execucação
+grandes. Neste trabalho, interessa-se somente funções eventualmente crescentes uma vez que a intenção é analisar custo de execução
 de algoritmos. Segue-se então as definições:
 
 \theoremstyle{definition}
@@ -107,7 +107,7 @@ Uma lista é uma estrutura recursiva que obedece a seguinte gramática:
 
 Onde $nil$ representa uma lista vazia, $a::list$ representa um elemento qualquer concatenado com uma lista.
 À fim de simplicidade, o primeiro elemento de uma lista $l$ é denotado aqui como $car(l)$ e a lista restante,
-a calda, é denotada como $cdr(l)$. Também para fim de simplicidade, denota-se para uma lista $l$, qualquer, $LENGTH(l)$ 
+a cauda, é denotada como $cdr(l)$. Também para fim de simplicidade, denota-se para uma lista $l$, qualquer, $LENGTH(l)$ 
 a quantidade de elementos que a mesma armazena. 
 
 \section{O algoritmo Merge Sort}
@@ -117,9 +117,9 @@ O algoritmo fundamenta-se na técnica Dividir-para-Conquistar. A técnica consis
 quebra-la em partes até que as mesmas sejam fáceis ou triviais de se resolver, por fim, cada pequena solução é combinada para
 de obter a solução para o problema maior. Apesar de parecer similar, esta técnica é bem diferente de programação dinâmica pois
 cada subproblema é disjunto dos demais. Desta forma, o algoritmo recebe uma lista como entrada uma lista de elementos comparáveis
-e divide tal lista até que cada sublista possua tamanho unitário - trivialmente ordenável - e então combina as listas para obter
+e divide tal lista até que cada sub-lista possua tamanho unitário - trivialmente ordenável - e então combina as listas para obter
 a lista de entrada ordenada. Por mais poderosa que seja a ideia, a implementação do Merge Sort é bem simples e pode ser deduzida
-a partir dos pseudo-códigos \ref{merge_pseudocode} responsável pela combinação das subsoluções e \ref{mergesort_pseudocode} responsável pelo processo de
+a partir dos pseudo-códigos \ref{merge_pseudocode} responsável pela combinação das sub-soluções e \ref{mergesort_pseudocode} responsável pelo processo de
 divisão.
 
 \begin{algorithm}[H]
@@ -191,7 +191,7 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
                 \item A cabeça de $\rho$ é maior que a cabeça de $\eta$.
         \end{enumerate}
 
-        No primeiro caso, ao menos uma das listas tem tamanho zero, o algoritmo retorna então a concanetação de uma
+        No primeiro caso, ao menos uma das listas tem tamanho zero, o algoritmo retorna então a concatenação de uma
         lista nula com outra lista $\psi$, que com certeza terá o mesmo tamanho que $\psi$. Para os outros dois casos
         basta demonstrar que tamanho de $\rho$ mais tamanho de $\eta$ é igual à $1 + MERGE(cdr(\rho),\ \eta)$ ou
         $1 + MERGE(\rho,\ cdr(\eta))$. 
@@ -213,11 +213,11 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
 
 \begin{lemma}
 \label{merge-is-permutation}
-        Para quaisquer entradas $\rho$ e $\eta$, $MERGE(\rho,\ \eta)$ é uma permutação de concanetação de $\eta$ e $\rho$.
+        Para quaisquer entradas $\rho$ e $\eta$, $MERGE(\rho,\ \eta)$ é uma permutação de concatenação de $\eta$ e $\rho$.
 \end{lemma}
 \begin{proof}
         Tomando $\rho$ e $\eta$ quaisquer, é sabído que a somas das ocorrências nas duas listas é igual às ocorrências
-        na concanetação das mesmas. Logo, basta demonstrar que a soma das ocorrências em $\rho$ e $\eta$ é igual às
+        na concatenação das mesmas. Logo, basta demonstrar que a soma das ocorrências em $\rho$ e $\eta$ é igual às
         ocorrências em $MERGE(\rho,\ \eta)$, o que efetivamente é o resultado verificado pelo lema \ref{merge-preserves-occurrences}. 
 \end{proof}
 
@@ -252,8 +252,8 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
 
 \begin{proof}
         Induzindo sobre o tamanho da lista $\tau$ de entrada e valendo-se da definição de $MERGESORT$. Basta demonstrar
-        que nos dois caminhos de execução do algoritmo não há modicação no tamanho da lista de entrada. O primeiro caso
-        ocorre quando o tamanho da lista de entrada $\tau$ é menor ou igual à um, que é trivial, uma vez que a respota do algoritmo
+        que nos dois caminhos de execução do algoritmo não há modificação no tamanho da lista de entrada. O primeiro caso
+        ocorre quando o tamanho da lista de entrada $\tau$ é menor ou igual à um, que é trivial, uma vez que a resposta do algoritmo
         é a própria lista $\tau$.
 
         No caso da chamada recursiva, o lema \ref{merge-preserves-length} nos garante que nenhuma chamada à $MERGE$ 
@@ -314,7 +314,7 @@ abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no
 
 O trabalho desenvolvido foi desafiador no sentido de ter que se preocupar com pequenos detalhes de cada prova. 
 Os lemas e as provas apresentados acima apesar de simples e por vezes evidentes levaram a formalizações
-complexas e de dificil entendimento à olho nu, por vezes, uma simples enunciação correta mas não favorável
+complexas e de difícil entendimento à olho nu, por vezes, uma simples enunciação correta mas não favorável
 ao longo do trabalho tornou o desenvolvimento da prova impraticável. Isso traduziu-se em alguns lemas
 sem uma prova completa ainda que a argumentação tenha oferecido uma boa base para a veracidade dos mesmos.
 
@@ -326,12 +326,10 @@ atrelado com a evolução deste tipo de Software.
 Em relação ao trabalho aqui apresentado, é deixada uma formalização completa da corretude do Merge Sort e um largo passo
 em relação à formalização da complexidade do algoritmo em seu pior caso, ambas em PVS. As provas deixadas estão hospedadas
 em modo público no repositório citado acima e podem ser verificadas e modificadas à vontade. Vale salientar que o uso
-da Nasa PVS Library ou similar é imprencidível para a formalização da complexidade uma vez que abordagem aqui adotada utiliza
+da Nasa PVS Library ou similar é imprescindível para a formalização da complexidade uma vez que abordagem aqui adotada utiliza
 de propriedades não triviais da função logarítmica.
-
 \bibliographystyle{acm}
 \bibliography{reference}
-
 \end{document}
 
 %%% Local Variables:
