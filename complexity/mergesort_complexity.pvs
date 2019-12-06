@@ -5,12 +5,15 @@ BEGIN
 IMPORTING complexity, mergesort, cmergesort, power@log, sorting, merge_sort_correctness
 
 p : nat
-
+    
 floor_aux: AXIOM
     FORALL (l : list[nat]):
         floor(length(l)/2) = length(l)/2
 
-
+log_aux: AXIOM
+    FORALL(n : nat | n > 1):
+        n + n * log(2)(n) <= 8 * n * log(2)(n)
+    
 cmerge_equiv_merge: LEMMA
     FORALL (l1, l2 : list[nat], c : nat):
         merge(l1, l2) = cmerge(l1, l2, c)`1
