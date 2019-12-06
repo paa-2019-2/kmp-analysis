@@ -7,11 +7,24 @@
 \usepackage[all]{xy}
 \usepackage{color}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{amsthm}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}
+
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{corollary}{Corolário}[theorem]
+\newtheorem{lemma}[theorem]{Lema}
+\newtheorem{axiom}[theorem]{Axioma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definição}[section]
 
 \title{{\large Universidade de Brasília \\ Instituto de Ciências Exatas \\
 Departamento de Ciência da Computação} \\[1cm]
 117536 - Projeto e Análise de Algoritmos Turma: B\\[.5cm]
-Análise Assintótica e Corretude do Algoritmo KMP Utilizando PVS}
+Análise Assintótica e Corretude do Algoritmo MergeSort Utilizando PVS}
 \author{Gabriel Levi - 16/0006490 \\
         Gabriel Nunes - 16/0006597}
 \date{\today}
@@ -24,8 +37,8 @@ Análise Assintótica e Corretude do Algoritmo KMP Utilizando PVS}
 \noindent A verificação formal de algoritmo, no que tange ao seu comportamento assintótico e a corretude do algoritmo é interesse
 central da Ciência da Computação. Por vezes, a prova via argumentação, isto é, lápis e papel pode ser suficiente para que o escritor
 convença o leitor de que o algoritmo está correto. Contudo, esse modelo de prova se sustenta muita vezes em passos de pura intuição,
-assumições que ambas as partes enxergam como um axioma, e saltos lógicos que por mais naturais que pareçam escondem um conjunto não-trivial
-de conceitos. A ocorrência desses aspectos em uma formalização pode ocultar falhas que, de fato, provem a incorretude do algoritmo e desmonstre
+premissas que ambas as partes enxergam como um axioma, e saltos lógicos que por mais naturais que pareçam escondem um conjunto não-trivial
+de conceitos. A ocorrência desses aspectos em uma formalização pode ocultar falhas que, de fato, provem a não-corretude do algoritmo ou demonstre
 um comportamento assintótico pior do que o esperado.
 
 Como forma de minimizar o exposto anteriormente, introduz-se os sistemas de verificação de provas. Os verificadores garantem que os passos realizados
@@ -36,45 +49,292 @@ o utilize para demonstrar que de fato aquela construção vale.
 
 Um dos verificadores, PVS - Prototype Verification System - é a linguagem de especificação e provador automatizado de teoremas que aqui será utilizado.
 PVS trabalha com implementações em distribuições de diferentes versões de LISP. Em um arquivo, o usuário define premissas - um algoritmo - e teoremas.
-O arquivo é dado como entrada para o provador que requisita as regras a serem aplicadas até que o teorema desejado seja provado. As regras reconhecidas pelo
-PVS tratam-se simplesmente de regras da lógica de primeira-ordem. O PVS permite também que uma prova possa ser revisitada em uma representação gráfica que
-revela cada passo bem como suas depedências.
+O arquivo é dado como entrada para o provador que requisita as regras a serem aplicadas até que o teorema desejado seja provado. O conjunto de regras reconhecidas pelo
+PVS trata-se do cálculo de sequentes. O PVS permite também que uma prova possa ser revisitada em uma representação gráfica que
+revela cada passo bem como suas dependências.
 
-O objetivo deste trabalho é analisar assintóticamente o custo de tempo e a corretude do algoritmo de \textit{pattern matching}
-desenvolvido por Donald Knuth, James Morris e Vaughan Pratt (KMP) e publicado em 1977. A escolha do KMP como objeto de estudo se deu pelo seu grande conjunto
-de aplicações práticas e por se tratar de um algoritmo muito inteligente para um problema onde a solução ingênua pode facilmente ter comportamento assintótico
-de ordem quadrática ou cúbica. A análise aqui feita apresentará a ideia de prova que será verificada via PVS. 
-A formalização completa pode ser encontrada em \url{https://github.com/paa-2019-2/kmp-analysis}.
+O objetivo deste trabalho é analisar assintóticamente o custo de tempo e a corretude do algoritmo de ordenação \textit{Merge Sort} via PVS. O Merge Sort foi criado
+em meados de 1945 por John Von Neumann. A escolha deste algoritmo se deu por ser de implementação muito simples para múltiplas estruturas de dados tais como
+vetores e listas ligadas e por, ainda sim, ser um algoritmo com múltiplas aplicações dado o seu custo de execução. Este relatório apresentará a ideia de prova
+formalizada via provador e fica a critério do leitor visitar o repositório para verificar a mesma. A formalização completa pode ser encontrada em \url{github.com/paa-2019-2/levi-nunes}.
 
-Esse documento se organizará, daqui em diante, primeiro por um capítulo de revisão teórica. Em seguida, no capitulo 3, a apresentação do algoritmo KMP
-apoiado por instâncias de entradas para melhor entendimento. O capitulo 4 apresentará a ideia abordada pelos autores para a análise de assintótica do algoritmo
-bem como argumentação sobre o pior e o melhor caso do mesmo. O capitulo 5 - Correção do algoritmo KMP - apresentará, como o capitulo anterior, a ideia abordada
-e sua argumentação. Por fim, o capitulo de conclusão, apresentará um resumo dos resultados aqui encontrados acompanhado de um meta-texto discorrendo sobre
+Esse documento se organizará, daqui em diante, por um capítulo \ref{explaining} de revisão teórica. Em seguida, no capitulo \ref{merge_sort}, a apresentação do algoritmo Merge Sort.
+O capitulo \ref{correctness} apresentará, como o capitulo anterior, a ideia abordada
+e sua argumentação. 
+O capitulo \ref{complexity} apresentará a ideia abordada pelos autores para a análise de assintótica do algoritmo
+bem como argumentação sobre o pior caso do mesmo. Por fim, o capitulo de conclusão, apresentará um resumo dos resultados aqui encontrados acompanhado de um meta-texto discorrendo sobre
 as principais dificuldades do trabalho com o verificador formal de provas.
 
 \section{Revisão teórica}
+\label{explaining}
 
-Este capítulo apresentará conceitos importantes para o entedimento do que se segue nos capitulos posteriores. Caso sinta-se a vontade com o conceito, 
-cujo o nome será enunciado no título de cada subseção, não há nenhum mal em pular. Cada um dos conceitos será apresentado de maneira simples mais preocupado
-com ser inteligível para o leitor do que com um profundo formalismo. Em compensação, uma boa bibliografia de apoio será indicada para aqueles interessados em 
-se aprofundar ou que não acharam que o texto de uma ou mais subseções foi suficiente.
+Este capitulo introduzirá conceitos necessários e notações necessárias para o entendimento das seções posteriores.
 
-// Se não existir nada além de Notação Assintótica, converter pra uma seção de revisão sobre Notação assintótica.
 \subsection{Notação assintótica}
 
-\subsection{}
+A notação assintótica é uma forma de descrever o comportamento de uma função matemática para um $n$ inteiros suficientemente
+grandes. Neste trabalho, interessa-se somente funções eventualmente crescentes uma vez que a intenção é analisar custo de execução
+de algoritmos. Segue-se então as definições:
 
-\section{O algoritmo KMP}
+\theoremstyle{definition}
+\begin{definition}
+        $O(g(n)) := \{f(n)\ |\ 0 \leq f(n) \leq c * g(n), c\ constante\ e\ n \geq n_0\}$        
+\end{definition}
 
-\section{Análise assintótica do KMP}
+Uma função $f(n)$ que descreve o custo de um algoritmo A pertence à $O(g(n))$ se, e somente se, para entradas 
+suficientemente grandes o custo do pior caso do algoritmo é limitado superiormente por uma função da ordem de $g(n)$.
+Isto quer dizer independente da entrada $n$, $n \geq n_0$  o algoritmo nunca tomará mais que $c * g(n)$ passos, $c$ constante, para concluir
+sua execução.
 
-\section{Corretude do algoritmo KMP}
+\theoremstyle{definition}
+\begin{definition}
+        $\Omega(g(n)) := \{f(n)\ |\ 0 \leq c * g(n) \leq f(n), c\ constante\ e\ n \geq n_0\}$        
+\end{definition}
+
+A definição de $\Omega$ é similar a definição de $O$, com a diferença que $\Omega$ descreve o comportamento do algoritmo
+em seu melhor caso. Isto é, independente da entrada $n$, $n \geq n_0$ o algoritmo tomará ao menos $c * g(n)$ passos, $c$ constante, para concluir
+sua execução.
+
+\theoremstyle{definition}
+\begin{definition}
+        $\Theta(g(n)) := \{f(n)\ | f(n) \in \Omega(g(n)) \wedge f(n) \in O(g(n))\}$        
+\end{definition}
+
+Por último, a definição de $\Theta$ descreve uma classe de algoritmos em que o melhor e o pior caso estão na mesma ordem
+de complexidade. É uma notação mais precisa em relação a complexidade do algoritmo mas que, efetivamente, não se aplica
+a qualquer análise.
+
+\subsection{Lista}
+
+Uma lista é uma estrutura recursiva que obedece a seguinte gramática:
+
+\[list := nil\ |\ a::list\]
+
+Onde $nil$ representa uma lista vazia, $a::list$ representa um elemento qualquer concatenado com uma lista.
+À fim de simplicidade, o primeiro elemento de uma lista $l$ é denotado aqui como $car(l)$ e a lista restante,
+a cauda, é denotada como $cdr(l)$. Também para fim de simplicidade, denota-se para uma lista $l$, qualquer, $LENGTH(l)$ 
+a quantidade de elementos que a mesma armazena. 
+
+\section{O algoritmo Merge Sort}
+\label{merge_sort}
+
+O algoritmo fundamenta-se na técnica Dividir-para-Conquistar. A técnica consiste em, dada uma instância do problema
+quebra-la em partes até que as mesmas sejam fáceis ou triviais de se resolver, por fim, cada pequena solução é combinada para
+de obter a solução para o problema maior. Apesar de parecer similar, esta técnica é bem diferente de programação dinâmica pois
+cada subproblema é disjunto dos demais. Desta forma, o algoritmo recebe uma lista como entrada uma lista de elementos comparáveis
+e divide tal lista até que cada sub-lista possua tamanho unitário - trivialmente ordenável - e então combina as listas para obter
+a lista de entrada ordenada. Por mais poderosa que seja a ideia, a implementação do Merge Sort é bem simples e pode ser deduzida
+a partir dos pseudo-códigos \ref{merge_pseudocode} responsável pela combinação das sub-soluções e \ref{mergesort_pseudocode} responsável pelo processo de
+divisão.
+
+\begin{algorithm}[H]
+\label{merge_pseudocode}
+        \KwData{$\rho, \eta : Sorted\ lists $}
+        \KwResult{Sorted merge of $\rho$ and $\eta$}
+        \eIf{$\rho = Nil$ or $\eta = Nil$}{
+            $\textbf{return}\  \rho + \eta$
+        }{
+            \eIf{$car(\rho) \leq car(\eta)$}{
+                $\textbf{return}\ car(\rho) + MERGE(cdr(\rho) ,\ \eta)$
+            }{
+                $\textbf{return}\ car(\eta) + MERGE(\rho,\ cdr(\eta))$
+            }
+        }
+        \caption{MERGE}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\label{mergesort_pseudocode}
+        \KwData{$\tau : List\ of\ comparable\ elements $}
+        \KwResult{$Sorted\ permutation\ of\ \tau$}
+        \eIf{$length(\tau) \leq 1$}{
+                $\textbf{return}\ \tau$
+        }{
+                $prefix \leftarrow\ MERGESORT(first\_half(\tau))$\;
+                $suffix \leftarrow\ MERGESORT(second\_half(\tau))$\;
+                $\textbf{return}\ MERGE(prefix,\ suffix)$\;  
+        }
+        \caption{MERGESORT}
+\end{algorithm}
+
+\section{Corretude do algoritmo Merge Sort}
+\label{correctness}
+
+A corretude de um algoritmo passa por demonstrar que o mesmo possui certas características independente da instância e que essas características
+se verifiquem antes, durante e depois da execução. Para um algoritmo de ordenação, é esperado que o mesmo responda para qualquer entrada uma permutação
+ordenada da mesma, isto é, a saída não só deve estar ordenada como também o número de ocorrências de cada elemento deve ser o mesmo da lista de entrada.
+
+A análise de MERGESORT nos leva a uma série de resultados intermediários que fortalecem a argumentação da corretude do algoritmo. Tais resultados estão expostos
+abaixo nesta seção e a formalização em PVS dos mesmos pode ser encontrado no repositório apresentado previamente na introdução deste texto.
+
+\begin{lemma}
+\label{merge-preserves-occurrences}
+        Para quaisquer $\rho$ e $\eta$, listas, e $n$ valor, o número de ocorrências de $n$ em $MERGE(\rho,\ \eta)$ é igual ao número de ocorrências
+        de $n$ em $\rho$ mais o número de ocorrências de $n$ em $\eta$.
+\end{lemma}
+
+\begin{proof}
+        Fixando um $n$ qualquer, induzindo sobre o tamanho das listas de entrada e valendo-se da definição de $MERGE$, essencialmente,
+        chegamos a dois casos em que a propriedade descrita no lema deve valer. O primeiro caso é quando algumas das listas de
+        entrada são nulas, neste caso, o algoritmo retorna uma das listas de entrada que, por si só, mantém as ocorrências de
+        qualquer valor $n$. O segundo caso ocorre quando ambas as listas possuem ao menos um elemento, neste caso, em algum momento será inserido
+        na lista resultante todas as ocorrências de $n$ presentes nas listas de entradas.
+\end{proof}
+
+\begin{lemma}
+\label{merge-preserves-length}
+        Para quaisquer entradas $\rho$ e $\eta$, listas, o tamanho da lista resultante de $MERGE(\rho,\ \eta)$ é a soma
+        dos tamanhos de $\rho$ e $\eta$.
+\end{lemma}
+
+\begin{proof}
+        Induzindo sobre o tamanho da listas e utilizando da definição de merge, a afirmação do
+        lema deve ser verificado em três situações:
+        \begin{enumerate}
+                \item $\rho$ ou $\eta$ são listas nulas.
+                \item A cabeça de $\rho$ é menor ou igual que a cabeça de $\eta$.
+                \item A cabeça de $\rho$ é maior que a cabeça de $\eta$.
+        \end{enumerate}
+
+        No primeiro caso, ao menos uma das listas tem tamanho zero, o algoritmo retorna então a concatenação de uma
+        lista nula com outra lista $\psi$, que com certeza terá o mesmo tamanho que $\psi$. Para os outros dois casos
+        basta demonstrar que tamanho de $\rho$ mais tamanho de $\eta$ é igual à $1 + MERGE(cdr(\rho),\ \eta)$ ou
+        $1 + MERGE(\rho,\ cdr(\eta))$. 
+
+        A indução sobre o tamanho das listas neste lema nos garante que se a soma dos tamanhos de duas listas $\psi$ e $\gamma$ 
+        for estritamente menor que a soma dos tamanhos de $\rho$ e $\eta$, então o tamanho de $\psi$ mais tamanho de $\gamma$ é igual ao tamanho
+        de $MERGE(\psi, \gamma)$. Podemos utilizar o seguinte resultado para os pares de lista de entrada $(cdr(\rho),\ \eta)$ 
+        e para $(\rho, cdr(\eta))$ sem nenhum problema, uma vez que garantidamente nenhuma das listas é nula. Com isto, o problema
+        é reduzido a verificação de
+        \begin{equation*}
+                LENGTH(\rho) + LENGTH(\eta) = 1 + LENGTH(cdr(\rho)) + LENGTH(\eta)
+        \end{equation*}
+        e,
+        \begin{equation*}
+                LENGTH(\rho) + LENGTH(\eta) = 1 + LENGTH(\rho) + LENGTH(cdr(\eta))
+        \end{equation*}
+        que são ambas, trivialmente, verdade.
+\end{proof}
+
+\begin{lemma}
+\label{merge-is-permutation}
+        Para quaisquer entradas $\rho$ e $\eta$, $MERGE(\rho,\ \eta)$ é uma permutação de concatenação de $\eta$ e $\rho$.
+\end{lemma}
+\begin{proof}
+        Tomando $\rho$ e $\eta$ quaisquer, é sabído que a somas das ocorrências nas duas listas é igual às ocorrências
+        na concatenação das mesmas. Logo, basta demonstrar que a soma das ocorrências em $\rho$ e $\eta$ é igual às
+        ocorrências em $MERGE(\rho,\ \eta)$, o que efetivamente é o resultado verificado pelo lema \ref{merge-preserves-occurrences}. 
+\end{proof}
+
+\begin{lemma}
+\label{merge-of-sorted-is-sorted}
+        Para quaisquer entradas $\rho$ e $\eta$, se ambas as listas estão ordenadas então
+        a resultante de $MERGE(\rho,\ \eta)$ também será uma lista ordenada. 
+\end{lemma}
+
+\begin{proof}
+        Basta demonstrar que para qualquer iteração de $MERGE$, o menor elementos dentre ambas as listas é escolhido para inserção no final
+        da lista parcialmente resultante. Uma vez que ambas as listas são ordenadas, necessariamente o menor elemento será a cabeça de $\rho$ ou de $\eta$.
+        Utilizando da definição de $MERGE$ e induzindo sobre o tamanho de ambas as listas 3 situações emergem:
+        \begin{enumerate}
+                \item Alguma das listas $\rho$ e $\eta$ tem tamanho 0.
+                \item A cabeça de $\rho$ é menor ou igual que a cabeça de $\eta$.
+                \item A cabeça de $\rho$ é maior que a cabeça de $\eta$.
+        \end{enumerate}
+
+        Na primeira situação, no máximo uma das listas possui elementos, então o elemento tomado para a composição da lista resultante será a cabeça
+        (o menor elemento) daquela que ainda não é vazia, por conveniência, o algoritmo já retorna a lista inteira, mas se de fato tivesse que escolher apenas
+        um, seria o menor disponível. O segundo e o terceiro caso são similares, a cabeça de $\rho$ é igual ao menor elemento de $\rho$ e o mesmo vale para a cabeça
+        de $\eta$, logo, o menor entre os ambos será o menor dentre todos e este será escolhido para a inserção ao final da lista resultante, a chamada recursiva 
+        posterior cai novamente em algum dos 3 casos.
+
+\end{proof}
+
+\begin{lemma}
+\label{mergesort-preserves-length}
+        Para qualquer entrada $\tau$, lista, o tamanho de $\tau$ é igual ao tamanho de $MERGESORT(\tau)$.
+\end{lemma}
+
+\begin{proof}
+        Induzindo sobre o tamanho da lista $\tau$ de entrada e valendo-se da definição de $MERGESORT$. Basta demonstrar
+        que nos dois caminhos de execução do algoritmo não há modificação no tamanho da lista de entrada. O primeiro caso
+        ocorre quando o tamanho da lista de entrada $\tau$ é menor ou igual à um, que é trivial, uma vez que a resposta do algoritmo
+        é a própria lista $\tau$.
+
+        No caso da chamada recursiva, o lema \ref{merge-preserves-length} nos garante que nenhuma chamada à $MERGE$ 
+        altera o tamanho da lista resultante e a própria parada de $MERGESORT$ conserva o tamanho da lista de entrada como visto
+        anteriormente. Dessa forma, $MERGESORT$ conserva o tamanho da lista de entrada na lista resultante. 
+\end{proof}
+
+\begin{lemma}
+\label{mergesort-is-permutation}
+        Para qualquer lista $\tau$, a resultante de $MERGESORT(\tau)$ é uma permutação de $\tau$.
+\end{lemma}
+
+\begin{proof}
+        A definição de permutação de uma lista nos diz que para qualquer chave $k$, o número de ocorrências
+        de $k$ em $\tau$ é o mesmo que em $PERMUTATION(\tau)$. Utilizando da definição de $MERGESORT$ e aplicando
+        indução sobre o tamanho da lista de entrada, obtemos dois casos em que faz necessário demonstrar que
+        a saída do algoritmo é uma permutação da entrada. O primeiro caso, trivial, diz respeito à listas com tamanhos menores
+        ou iguais à um, neste caso o algoritmo retorna a própria lista de entrada que por definição é uma permutação de si mesma.
+        
+        O segundo caso a ser demonstrado é para listas de tamanho maior do que um, entradas as quais o algoritmo realiza ao menos
+        uma chamada recursiva a sí próprio. O lema \ref{merge-is-permutation} nos garante que a chamada à função $MERGE$
+        efetivamente não altera o status de permutação de uma lista e o fato de o caso de parada da recursão de $MERGESORT$ também
+        não modificar esta configuração nos permite concluir que $MERGESORT(\tau)$ é uma permutação de $\tau$ para qualquer $\tau$.
+\end{proof}
+
+\begin{lemma}
+\label{mergesort-sorts}
+        Para qualquer lista $\tau$, a resultante de $MERGESORT(\tau)$ é uma lista ordenada.
+\end{lemma}
+
+\begin{proof}
+        Aplicando indução forte sobre o tamanho da lista $\tau$ chegamos a dois casos a serem demonstrados.
+        Se a lista tem tamanho menor ou igual à um, a mesma está trivialmente ordenada. Caso contrário,
+        o lema \ref{merge-of-sorted-is-sorted} nos garante e o merge das chamadas recursivas de $MERGESORT$
+        para cada uma das metades de $\tau$, $prefix\ e\ suffix$,  tem como resultado uma lista ordenada
+        desde que $MERGESORT(prefix)$ e $MERGESORT(suffix)$ sejam ambas listas ordenadas.
+
+        Aqui podemos nos valer de propriedade desta indução forte que diz que qualquer lista $\phi$ tal que
+        o tamanho da mesma seja estritamente menor que o tamanho de $\tau$, então $MERGESORT(\phi)$ é uma lista
+        ordenada. Sabemos que $\tau$ tem tamanho maior ou igual que 2, logo qualquer metade desta lista
+        terá tamanho estritamente menor que $\tau$.
+\end{proof}
+
+\begin{theorem}
+\label{mergesort-is-correct}
+        Para qualquer lista $\tau$, a resultante de $MERGESORT(\tau)$ é uma permutação ordenada de $\tau$.
+\end{theorem}
+
+\begin{proof}
+        Aplicando os lemas \ref{mergesort-is-permutation} e \ref{mergesort-sorts}, a propriedade da corretude torna-se
+        evidente.
+\end{proof}
+
+\input{complexity.tex}
 
 \section{Conclusão}
+\label{conclusion}
 
+O trabalho desenvolvido foi desafiador no sentido de ter que se preocupar com pequenos detalhes de cada prova. 
+Os lemas e as provas apresentados acima apesar de simples e por vezes evidentes levaram a formalizações
+complexas e de difícil entendimento à olho nu, por vezes, uma simples enunciação correta mas não favorável
+ao longo do trabalho tornou o desenvolvimento da prova impraticável. Isso traduziu-se em alguns lemas
+sem uma prova completa ainda que a argumentação tenha oferecido uma boa base para a veracidade dos mesmos.
+
+De fato tanto o PVS quanto outros assistentes de prova não são indicados para quem deseja aprender a fazer uma prova,
+e sim para aqueles que já dominam a prova e não possuem algum porém em relação à fundamentação lógica por trás.
+A conjunto de pessoas que utilizam assistente de provas ainda é muito restrito mas há um movimento para que isto cresça
+atrelado com a evolução deste tipo de Software.
+
+Em relação ao trabalho aqui apresentado, é deixada uma formalização completa da corretude do Merge Sort e um largo passo
+em relação à formalização da complexidade do algoritmo em seu pior caso, ambas em PVS. As provas deixadas estão hospedadas
+em modo público no repositório citado acima e podem ser verificadas e modificadas à vontade. Vale salientar que o uso
+da Nasa PVS Library ou similar é imprescindível para a formalização da complexidade uma vez que abordagem aqui adotada utiliza
+de propriedades não triviais da função logarítmica.
 \bibliographystyle{acm}
 \bibliography{reference}
-
 \end{document}
 
 %%% Local Variables:
