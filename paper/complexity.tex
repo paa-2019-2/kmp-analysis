@@ -195,6 +195,16 @@ Para o item 3, basta utilizar a ideia da prova do item 2, porém utilizando
 a hipótese de indução para $cdr(\eta)$.
 \end{proof}
 
+O lema asseguir representa a complexidade de fato do algoritmo,
+e utiliza o seguinte axioma, também utilizado por Cormen\cite{cormen2012algoritmos}:
+
+\begin{axiom}
+  \label{floor_aux}
+  $\forall \rho$, lista de naturais, floor(LENGTH($\rho$)/2) 
+  = LENGTH($\rho$)/2, onde
+  \textbf{floor} denota o arrendondamento para baixo. 
+\end{axiom}
+
 \begin{lemma}
   \label{merge_sort_ws}
   $\forall \rho$, lista de naturais, tal que tamanho de $\rho$ é maior
@@ -204,5 +214,23 @@ a hipótese de indução para $cdr(\eta)$.
 \end{lemma}
 
 \begin{proof}
-  
+  A ideia central da prova é utilizar substituições para
+  chegar no resultado final. Para tanto, começamos a prova utilizando
+  indução forte sobre LENGTH($\rho$), sendo a hipótese de indução
+  que a propriedade vale para listas cujo tamanho é menor que o tamanho
+  de $\rho$, e expandimos a definição de $COUNT-MERGESORT$. 
+  Usamos o lema \ref{cmerge_general_case} e o lema \ref{cmerge_sort_length}
+  para chegar ao sequente: o contador retornado por $COUNT-MERGE$ 
+  aplicada a $COUNT-MERGESORT$ expandido é LENGTH($\rho$) + 
+  $\sigma + \iota$, onde $\sigma$ é o valor do contador de $COUNT-MERGESORT$
+  aplicado ao prefixo de $\rho$ e $\iota$ é o valor do contador de $COUNT-MERGESORT$
+  aplicado ao sufixo de $\rho$, ou seja, chegamos à equação de recorrência
+  T(n) $\le$ T($\ceil{\frac{n}{2}}$) + T($\floor{\frac{n}{2}}$) + n, onde \textbf{n}
+  é LENGTH($\rho$).
+
+  Com a equação de recorrência presente no sequente, utilizamos a hipótese 
+  de indução para suffix e prefix, e o axioma \ref{floor_aux}, 
+  que simplifica a recorrência e a transforma em T(n) $\le$ 
+  2 * T($\frac{n}{2}$) + n. Basta utilizar então as propriedades de
+  divisão e inverso do logaritmo para provar o sequente.
 \end{proof}
